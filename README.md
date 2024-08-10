@@ -14,13 +14,16 @@ The Aprajita Foundation is a non-profit organization dedicated to uplifting wome
 ## Projects
 
 ### 1. **Vocational Training Programs**
-   We offer a range of vocational training programs designed to provide women with the skills they need to start their own businesses or secure meaningful employment.
+
+We offer a range of vocational training programs designed to provide women with the skills they need to start their own businesses or secure meaningful employment.
 
 ### 2. **Cultural Preservation Initiatives**
-   Our cultural preservation initiatives focus on documenting, promoting, and supporting traditional crafts and practices, ensuring that they remain a vital part of our community.
+
+Our cultural preservation initiatives focus on documenting, promoting, and supporting traditional crafts and practices, ensuring that they remain a vital part of our community.
 
 ### 3. **Community Support Programs**
-   We work closely with local communities to provide support services, including healthcare, education, and legal aid, to ensure that women and their families have the resources they need to thrive.
+
+We work closely with local communities to provide support services, including healthcare, education, and legal aid, to ensure that women and their families have the resources they need to thrive.
 
 ## How You Can Help
 
