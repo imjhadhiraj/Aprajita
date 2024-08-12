@@ -1,5 +1,5 @@
 import { Banner, Gallery, Event } from '../models/services.model.js';
-import { uploadOnCloudinary, deleteFromCloudinary } from '../utils/Cloudinary.Utils.js';
+import { uploadOnCloudinary, deleteFromCloudinary } from '../utils/Cloudinary.utils.js';
 
 export const uploadGalleryImage = async (req, res) => {
     try {
