@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.model.js';
 import bcrypt from 'bcryptjs';
-import { uploadOnCloudinary } from '../utils/Cloudinary.Utils.js';
+import { uploadOnCloudinary } from '../utils/Cloudinary.utils.js';
 
 const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 const salt = bcrypt.genSaltSync(12);
