@@ -5,8 +5,9 @@ import cookieParser from 'cookie-parser';
 import path from 'path';
 import multer from 'multer';
 import mongoose from 'mongoose';
-import { loginAdmin, registerAdmin } from './controllers/User.controller.js';
+import { loginAdmin, logout, registerAdmin, updateProfile } from './controllers/User.controller.js';
 import { createPayment, storeVerifiedPayment } from './controllers/payment.controller.js';
+import { authAdmin } from './middlewares/authAdmin.middleware.js';
 
 dotenv.config();
 
@@ -51,8 +52,9 @@ app.get('/health', (req, res) => {
 router.route('/register-admin').post(
     upload.single('profileImg'),
     registerAdmin);
-
 router.route('/login-admin').post(loginAdmin);
+router.route('/update-admin').post(authAdmin, updateProfile);
+router.route('/logout').get(logout);
 
 router.route('/create-payment').post(createPayment)
 router.route('/verify-payment').post(storeVerifiedPayment);
