@@ -5,7 +5,6 @@ import Homepage from "./components/HomePage"
 import TeamAndTestimonialPage from "./components/TeamAndTestimonialPage"
 
 function App() {
-
   return (
     <>
       <Homepage />

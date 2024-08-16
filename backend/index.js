@@ -5,7 +5,7 @@ import cookieParser from 'cookie-parser';
 import path from 'path';
 import multer from 'multer';
 import mongoose from 'mongoose';
-import { loginAdmin, logout, registerAdmin, updateProfile } from './controllers/User.controller.js';
+import { loginAdmin, logout, profile, registerAdmin, updateProfile } from './controllers/User.controller.js';
 import { createPayment, storeVerifiedPayment } from './controllers/payment.controller.js';
 import { authAdmin } from './middlewares/authAdmin.middleware.js';
 
@@ -49,13 +49,16 @@ app.get('/health', (req, res) => {
     res.json({ message: 'Welcome to the API' });
 });
 
+// ----------admin auth routes----------------
 router.route('/register-admin').post(
+    authAdmin,
     upload.single('profileImg'),
     registerAdmin);
 router.route('/login-admin').post(loginAdmin);
 router.route('/update-admin').post(authAdmin, updateProfile);
+router.route('/admin-profile').post(authAdmin, profile);
 router.route('/logout').get(logout);
-
+// ----------- payment----------------
 router.route('/create-payment').post(createPayment)
 router.route('/verify-payment').post(storeVerifiedPayment);
 
