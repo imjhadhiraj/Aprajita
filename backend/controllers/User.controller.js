@@ -79,11 +79,18 @@ export const loginAdmin = async (req, res) => {
 export const logout = async (req, res) => {
     try {
         // clear either cookie or the header token
-        if (req.cookies?.token)
-            res.clearCookie('token');
-        if (req.headers?.authorization)
-            res.setHeader('Authorization', '');
-        return res.status(200).json({ message: 'Logout successful' });
+        const { token } = req.cookies;
+        if (token) {
+            return res.status(200).clearCookie('token', {
+                httpOnly: true,
+                secure: true,
+            }).json({ message: 'Logout successful' });
+        }
+        else {
+            return res.status(200).setHeader('Authorization', '')
+                .json({ message: "Logout success" });
+        }
+
     } catch (error) {
         return res.status(400).json(error?.message);
     }
