@@ -4,6 +4,7 @@ import toast from 'react-hot-toast'
 import { Toaster } from 'react-hot-toast'
 import useAdmin from '../../store/useAdmin'
 import { useNavigate } from 'react-router-dom'
+import Loader from './Loader'
 
 const Admin = () => {
     const navigate = useNavigate()
@@ -11,6 +12,8 @@ const Admin = () => {
     const [password, setPassword] = useState('')
     const setUser = useAdmin((state) => state.setUser);
     const user = useAdmin((state) => state.user);
+    const userLoaded = useAdmin((state) => state.userLoaded);
+    const loadingUser = useAdmin((state) => state.loadingUser);
 
     const checkProfile = () => {
         axios.post(`${import.meta.env.VITE_BACKEND_BASE_URL}/admin-profile`, {},
@@ -20,10 +23,12 @@ const Admin = () => {
         ).then(res => {
             // console.log(res.data)
             setUser(res.data)
+            loadingUser(true)
             navigate("/admin-dashboard")
-        }).catch(e =>
+        }).catch(e => {
             console.log("profile not found", e)
-        )
+            // toast.error(e?.response?.data?.error)
+        })
     }
 
     useEffect(() => {
@@ -51,20 +56,29 @@ const Admin = () => {
             return
         }
 
-        const req = await axios.post(`${import.meta.env.VITE_BACKEND_BASE_URL}/login-admin`,
-            { email, password }, { withCredentials: true }
-        )
+        try {
+            const req = await axios.post(`${import.meta.env.VITE_BACKEND_BASE_URL}/login-admin`,
+                { email, password }, { withCredentials: true }
+            )
 
-        if (req.status === 200) {
-            toast.success('Login Successful')
-            // console.log(req.data)
-            setUser(req.data)
-            navigate('/admin-dashboard')
-        }
-        else {
-            toast.error('Invalid Credentials')
+            if (req.status == 200) {
+                toast.success('Login Successful')
+                // console.log(req.data)
+                setUser(req.data)
+                navigate('/admin-dashboard')
+            }
+            else {
+                toast.error('Invalid Credentials')
+            }
+        } catch (error) {
+            // console.log(error)
+            toast.error(error?.response?.data?.error)
         }
     }
+
+    if (!userLoaded) return <div className='w-full h-[100vh] flex justify-center items-center'>
+        <Loader />
+    </div>
 
     return (
         <div className='bg-gray-700 text-white h-screen p-0'>

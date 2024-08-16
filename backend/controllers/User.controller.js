@@ -68,6 +68,7 @@ export const loginAdmin = async (req, res) => {
             .cookie('token', token, {
                 httpOnly: true,
                 secure: true,
+                sameSite: 'none'
             })
             .status(200)
             .json({ message: 'Login successful', token, user });
@@ -84,6 +85,7 @@ export const logout = async (req, res) => {
             return res.status(200).clearCookie('token', {
                 httpOnly: true,
                 secure: true,
+                sameSite: 'none'
             }).json({ message: 'Logout successful' });
         }
         else {
@@ -98,11 +100,17 @@ export const logout = async (req, res) => {
 
 export const profile = async (req, res) => {
     const user = req.user;
+    // console.log(user)
+
+    const myuser = await User.findById(user._id).select('-password');
+    if (!myuser) {
+        return res.status(400).json({ error: 'User not found' });
+    }
     return res
         .status(200)
         .json({
             message: 'Profile fetched successfully',
-            user
+            user: myuser
         });
 }
 
@@ -181,7 +189,7 @@ export const updateProfile = async (req, res) => { // only done by frontend not 
             .cookie('token', newToken, {
                 httpOnly: true,
                 secure: true,
-                sameSite: 'None',
+                sameSite: 'none'
             })
             .json({ message: 'Profile updated successfully', user, token: newToken });
     }
