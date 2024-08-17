@@ -7,16 +7,16 @@ const Homepage = () => {
             {/* Top bar */}
             <div className="bg-orange-500 text-white p-2 flex justify-between items-center">
                 <div className="flex space-x-2">
-                    <a href="https://www.facebook.com" target='_blank'>
+                    <a href="https://www.facebook.com/theaprajita16?mibextid=ZbWKwL" target='_blank'>
                         <Facebook className='cursor-pointer' size={20} />
                     </a>
-                    <a href="https://www.twitter.com" target='_blank'>
+                    <a href="https://twitter.com/aprajita_fndtn" target='_blank'>
                         <Twitter className='cursor-pointer' size={20} />
                     </a>
-                    <a href="https://www.linkedin.com" target='_blank'>
+                    <a href="https://www.linkedin.com/company/aprajita-foundation/" target='_blank'>
                         <Linkedin className='cursor-pointer' size={20} />
                     </a>
-                    <a href="https://www.instagram.com" target='_blank'>
+                    <a href="https://www.instagram.com/aprajita_foundation/" target='_blank'>
                         <Instagram className='cursor-pointer' size={20} />
                     </a>
                 </div>
@@ -41,9 +41,9 @@ const Homepage = () => {
                         <span className="text-sm">theaprajita16@gmail.com</span>
                     </a>
 
-                    <a className="flex items-center" href="tel:+919289228351">
+                    <a className="flex items-center" href="tel:+918920445915">
                         <Phone className="text-orange-500 mr-2" />
-                        <span className="text-sm">09289228351</span>
+                        <span className="text-sm">08920445915</span>
                     </a>
 
                 </div>
@@ -68,13 +68,16 @@ const Homepage = () => {
 
             {/* Hero Section */}
             <div className="relative h-96 bg-gray-300">
-                <img src="" alt="banner" className="w-full h-full object-cover" />
+                <img src="banner.jpeg" alt="banner" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center text-white">
-                    <h1 className="text-5xl font-bold mb-4">
-                        <span className="text-orange-500">FEED</span> AND EDUCATE
-                    </h1>
+                <h1 className="text-5xl font-bold text-center mb-4">
+    <span className="text-orange-500 block mb-4">Women Empowerment</span>
+    <span className="block mb-4">AND</span>
+    <span className="text-orange-500 block">Culture Preservation</span>
+</h1>
+
                     <p className="text-center max-w-md mb-8">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                    Aprajita Foundation empowers women and keeps our cultural traditions alive, making a difference in everyday lives.
                     </p>
                     <div className="flex space-x-4">
                         <button className="bg-orange-500 text-white px-6 py-2 rounded">DONATE NOW</button>
@@ -85,13 +88,18 @@ const Homepage = () => {
 
             {/* Action Boxes */}
             <div className="flex justify-around py-8 bg-gray-100">
-                {['Send Donation', 'Become Volunteer', 'Give Inspiration'].map((text, index) => (
-                    <div key={index} className="w-1/4 p-4 bg-white shadow-md text-center">
-                        <h3 className="font-bold text-xl mb-2">{text}</h3>
-                        <p className="text-sm">It is a long established fact that a reader will be distracted by the readable content.</p>
-                    </div>
-                ))}
-            </div>
+    {[
+        { title: 'Send Donation', content: 'Your contribution helps us drive impactful projects and support those in need.' },
+        { title: 'Become Volunteer', content: 'Join us in our mission to make a difference by contributing your time and skills.' },
+        { title: 'Give Inspiration', content: 'Share your story or ideas to inspire others and spread positivity.' }
+    ].map((item, index) => (
+        <div key={index} className="w-1/4 p-4 bg-white shadow-md text-center">
+            <h3 className="font-bold text-xl mb-2">{item.title}</h3>
+            <p className="text-sm">{item.content}</p>
+        </div>
+    ))}
+</div>
+
         </div>
     );
 };
