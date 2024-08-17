@@ -23,11 +23,12 @@ const Admin = () => {
         ).then(res => {
             // console.log(res.data)
             setUser(res.data)
-            loadingUser(true)
             navigate("/admin-dashboard")
         }).catch(e => {
             console.log("profile not found", e)
             // toast.error(e?.response?.data?.error)
+        }).finally(() => {
+            loadingUser(true)
         })
     }
 

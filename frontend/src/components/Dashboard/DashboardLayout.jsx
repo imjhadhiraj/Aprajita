@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import useAdmin from '../../../store/useAdmin'
 import { Link, Outlet, useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import toast from 'react-hot-toast'
+import toast, { Toaster } from 'react-hot-toast'
 import { LogOut } from 'lucide-react'
 
 const DashboardLayout = () => {
@@ -37,6 +37,7 @@ const DashboardLayout = () => {
 
     return (
         <div>
+            <Toaster />
             <div className="flex h-screen bg-gradient-to-b from-pink-200 to-orange-100">
                 <nav className="w-64 bg-white p-4 shadow-lg">
                     <div className="flex items-center mb-6">
