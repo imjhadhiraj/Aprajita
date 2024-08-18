@@ -3,10 +3,10 @@ import { uploadOnCloudinary, deleteFromCloudinary } from '../utils/Cloudinary.ut
 
 export const uploadGalleryImage = async (req, res) => {
     try {
-        const { title } = req.body;
+        const user = req.user;
         const image = req.file;
-        if (!title || !image) {
-            return res.status(400).json({ error: 'All fields are required' });
+        if (!image) {
+            return res.status(400).json({ error: 'Image is required' });
         }
         let imagePath = image.path;
         imagePath = await uploadOnCloudinary(imagePath)
@@ -16,7 +16,7 @@ export const uploadGalleryImage = async (req, res) => {
         imagePath = imagePath.url
 
         const gallery = await Gallery.create({
-            title,
+            user: user._id,
             image: imagePath
         });
         if (!gallery) {
@@ -36,11 +36,11 @@ export const deleteGalleryImage = async (req, res) => {
         if (!gallery) {
             return res.status(400).json({ error: 'Image not found' });
         }
-        const deleted = await deleteFromCloudinary(gallery.image);
-        if (!deleted) {
+        const deletedGalleryData = await Gallery.findByIdAndDelete(id);
+        if (!deletedGalleryData) {
             return res.status(400).json({ error: 'Image delete failed' });
         }
-        await Gallery.findByIdAndDelete(id);
+        await deleteFromCloudinary(gallery.image);
         return res.status(200).json({ message: 'Image deleted successfully' });
     } catch (error) {
         return res.status(400).json(error?.message);

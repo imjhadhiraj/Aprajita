@@ -10,11 +10,14 @@ import Admin from './components/Admin.jsx';
 import DashboardLayout from './components/Dashboard/DashboardLayout.jsx';
 import Gallery from './components/Dashboard/Gallery.jsx';
 import Events from './components/Dashboard/Events.jsx';
+import NotFoundPage from './components/NotFoundPage.jsx';
+import Welcome from './components/Dashboard/Welcome.jsx';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
+    errorElement: <NotFoundPage />,
   },
   {
     path: "/admin",
@@ -24,6 +27,10 @@ const router = createBrowserRouter([
     path: "/admin-dashboard",
     element: <DashboardLayout />,
     children: [
+      {
+        path: "",
+        element: <Welcome />
+      },
       {
         path: "gallery",
         element: <Gallery />
