@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import { Toaster } from 'react-hot-toast'
-import useAdmin from '../../store/useAdmin'
+import useAdmin from '../store/useAdmin'
 import { useNavigate } from 'react-router-dom'
 import Loader from './Loader'
 

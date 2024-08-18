@@ -1,5 +1,4 @@
-import React from 'react';
-import { Facebook, Twitter, Linkedin, Instagram, Mail, Phone, Calendar, ArrowRight } from 'lucide-react';
+import { Calendar, ArrowRight } from 'lucide-react';
 
 const campaignContent = [
     {
@@ -43,9 +42,9 @@ const CampaignPage = () => {
             {/* Previous sections (top bar, header, navigation) remain the same */}
 
             {/* Campaign Cards */}
-            <div className="flex justify-between p-8 bg-orange-100">
+            <div className="flex md:justify-between gap-2 p-8 bg-orange-100 flex-wrap md:flex-nowrap">
                 {campaignContent.map((item, index) => (
-                    <div key={index} className="w-1/4 bg-white p-4 rounded-lg shadow-md">
+                    <div key={index} className=" bg-white p-4 rounded-lg shadow-md">
                         <div className="w-12 h-12 bg-orange-500 rounded-full mb-4 flex items-center justify-center text-white">
                             <ArrowRight />
                         </div>
@@ -79,8 +78,8 @@ const CampaignPage = () => {
             </div>
 
             {/* Donation Form and Info Section */}
-            <div className="flex p-8 bg-gray-100">
-                <div className="w-1/2 pr-4">
+            <div className="flex p-8 bg-gray-100 flex-col-reverse md:flex-row flex-wrap md:flex-nowrap gap-3">
+                <div className="w-full md:w-1/2 pr-4">
                     <h2 className="text-2xl font-bold mb-4">Make your donation</h2>
                     <form className="bg-white p-4 rounded-lg shadow-md">
                         <div className="flex mb-4">
@@ -96,10 +95,10 @@ const CampaignPage = () => {
                         <button className="w-full bg-orange-500 text-white py-2 rounded">Donate Now</button>
                     </form>
                 </div>
-                <div className="w-1/2 pl-4">
+                <div className="w-full md:w-1/2 pl-4">
                     <h2 className="text-2xl font-bold mb-4">Why You Should Donate</h2>
                     <p className="text-sm mb-4">
-                    As an NGO, we independently organize all our events and rely solely on our own resources. Your donations are crucial for us to continue our work and make a meaningful impact.
+                        As an NGO, we independently organize all our events and rely solely on our own resources. Your donations are crucial for us to continue our work and make a meaningful impact.
                     </p>
                     <button className="bg-orange-500 text-white px-4 py-2 rounded">Read More</button>
                 </div>
