@@ -120,9 +120,9 @@ export const getBannerImages = async (req, res) => {
 
 export const addEvent = async (req, res) => {
     try {
-        const { title, description } = req.body;
+        const { title, description, date, location } = req.body;
         const image = req.file;
-        if (!title || !description || !image) {
+        if (!title || !description || !date || !location) {
             return res.status(400).json({ error: 'All fields are required' });
         }
         let imagePath = image.path;
@@ -132,16 +132,20 @@ export const addEvent = async (req, res) => {
 
         imagePath = imagePath.url
 
+        const parsedDate = new Date(date);
+
         const event = await Event.create({
             title,
             description,
+            date: parsedDate,
+            location,
             image: imagePath
         });
         if (!event) {
             return res.status(400).json({ error: 'Image upload failed' });
         }
 
-        return res.status(200).json({ message: 'Image uploaded successfully' });
+        return res.status(200).json({ message: 'Event Added Sucessfully' });
     } catch (error) {
         return res.status(400).json(error?.message);
     }
@@ -152,14 +156,14 @@ export const deleteEvent = async (req, res) => {
         const { id } = req.params;
         const event = await Event.findById(id);
         if (!event) {
-            return res.status(400).json({ error: 'Image not found' });
+            return res.status(400).json({ error: 'Event not found' });
         }
-        const deleted = await deleteFromCloudinary(event.image);
-        if (!deleted) {
-            return res.status(400).json({ error: 'Image delete failed' });
+        const deletedEvemt = await Event.findByIdAndDelete(id);
+        if (!deletedEvemt) {
+            return res.status(400).json({ error: 'Event delete failed' });
         }
-        await Event.findByIdAndDelete(id);
-        return res.status(200).json({ message: 'Image deleted successfully' });
+        await deleteFromCloudinary(event.image);
+        return res.status(200).json({ message: 'Event deleted successfully' });
     }
     catch (error) {
         return res.status(400).json(error?.message);
@@ -170,7 +174,7 @@ export const getAllEvents = async (req, res) => {
     try {
         const event = await Event.find();
         if (!event) {
-            return res.status(400).json({ error: 'Images not found' });
+            return res.status(400).json({ error: 'Events not found' });
         }
         return res.status(200).json(event);
     } catch (error) {

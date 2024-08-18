@@ -1,4 +1,4 @@
-import useAdmin from "../../../store/useAdmin";
+import useAdmin from "../../store/useAdmin";
 
 const Welcome = () => {
     const admin = useAdmin((state) => state.user);

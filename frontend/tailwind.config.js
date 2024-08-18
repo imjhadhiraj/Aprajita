@@ -4,10 +4,27 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
-
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [
+    function ({ addUtilities }) {
+      addUtilities({
+        '.scrollbar-thin::-webkit-scrollbar': {
+          width: '8px',
+        },
+        '.scrollbar-thin::-webkit-scrollbar-track': {
+          'border-radius': '10px',
+          background: '#f1f1f1',
+        },
+        '.scrollbar-thin::-webkit-scrollbar-thumb': {
+          background: 'linear-gradient(180deg, #1e3a8a, #3b82f6)',
+          'border-radius': '10px',
+        },
+        '.scrollbar-thin::-webkit-scrollbar-thumb:hover': {
+          background: '#555',
+        },
+      });
+    },
+  ],
 }
-

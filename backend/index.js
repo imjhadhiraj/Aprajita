@@ -8,7 +8,7 @@ import mongoose from 'mongoose';
 import { loginAdmin, logout, profile, registerAdmin, updateProfile } from './controllers/User.controller.js';
 import { createPayment, storeVerifiedPayment } from './controllers/payment.controller.js';
 import { authAdmin } from './middlewares/authAdmin.middleware.js';
-import { deleteGalleryImage, getGalleryImages, uploadGalleryImage } from './controllers/services.controller.js';
+import { addEvent, deleteEvent, deleteGalleryImage, getAllEvents, getGalleryImages, uploadGalleryImage } from './controllers/services.controller.js';
 
 dotenv.config();
 
@@ -60,6 +60,8 @@ router.route('/update-admin').post(authAdmin, updateProfile);
 router.route('/admin-profile').post(authAdmin, profile);
 router.route('/logout').get(logout);
 //----------service routes----------------
+
+// # Gallery routes 
 router.route('/upload-gallery-image').post(
     authAdmin,
     upload.single('galleryImg'),
@@ -67,6 +69,16 @@ router.route('/upload-gallery-image').post(
 
 router.route('/delete-gallery-image/:id').delete(authAdmin, deleteGalleryImage);
 router.route('/get-gallery-images').get(getGalleryImages);
+
+// # Events routes
+router.route('/add-event').post(
+    authAdmin,
+    upload.single('eventImg'),
+    addEvent);
+
+router.route('/delete-event/:id').delete(authAdmin, deleteEvent);
+router.route('/get-events').get(getAllEvents);
+
 // ----------- payment----------------
 router.route('/create-payment').post(createPayment)
 router.route('/verify-payment').post(storeVerifiedPayment);
