@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import Loader from "../Loader"
+import Loader from "../Loader";
+import uploadToCloud from '../utils/uploadToCloud';
+
 const Gallery = () => {
     const [images, setImages] = useState([]);
-    const [selectedFile, setSelectedFile] = useState([]);
+    const [selectedFiles, setSelectedFiles] = useState([]);
     const [imagePreview, setImagePreview] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,13 +18,13 @@ const Gallery = () => {
     }, []);
 
     const fetchImages = async () => {
+        setIsLoading(true);
         try {
-            const response = await axios.get(`${import.meta.env.VITE_BACKEND_BASE_URL}/get-gallery-images`); // Adjust the endpoint as needed
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_BASE_URL}/get-gallery-images`);
             setImages(response.data);
         } catch (err) {
             toast.error(err?.response?.data?.error || 'Failed to fetch images');
-        }
-        finally {
+        } finally {
             setIsLoading(false);
         }
     };
@@ -34,56 +36,59 @@ const Gallery = () => {
             toast.success(res.data.message);
         } catch (err) {
             toast.error(err?.response?.data?.error || 'Failed to delete image');
-        }
-        finally {
+        } finally {
             setIsModalOpen(false);
         }
     };
 
-    const handleButtonClick = async () => {
-        await fileInputRef.current.click();
+    const handleButtonClick = () => {
+        fileInputRef.current.click();
     };
 
     const handleFileChange = (event) => {
         const files = Array.from(event.target.files);
-        setSelectedFile(files);
+        setSelectedFiles(files);
         const previews = files.map(file => URL.createObjectURL(file));
         setImagePreview(previews);
     };
 
     const handleAddImage = async () => {
-        if (!selectedFile) {
+        if (selectedFiles.length === 0) {
             toast.error('Please select a file first!');
             return;
         }
 
+        setIsLoading(true);
         try {
-            const response = await axios.post(`${import.meta.env.VITE_BACKEND_BASE_URL}/upload-gallery-image`, {
-                withCredentials: true,
-            });
+            const uploadPromises = selectedFiles.map(file => uploadToCloud(file));
+            const uploadedUrls = await Promise.all(uploadPromises);
+
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_BASE_URL}/upload-gallery-image`,
+                { images: uploadedUrls },
+                { withCredentials: true }
+            );
 
             if (response.status === 200) {
                 toast.success(response.data.message);
+                fetchImages(); // Refresh the gallery
             } else {
                 toast.error(response.data.error);
             }
         } catch (error) {
             toast.error(error?.response?.data?.error || 'Failed to upload image');
-        }
-        finally {
-            setSelectedFile(null);
-            setImagePreview(null);
-            fetchImages();
+        } finally {
+            setSelectedFiles([]);
+            setImagePreview([]);
+            setIsLoading(false);
         }
     };
-
 
     const openModal = (id) => {
         setImageToDelete(id);
         setIsModalOpen(true);
     };
 
-    if (isLoading) return <div className="text-center mt-8"><Loader /></div>;
+    if (isLoading) return <div className="w-full h-[100vh] flex justify-center items-center"><Loader /></div>;
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -97,9 +102,11 @@ const Gallery = () => {
                 onChange={handleFileChange}
             />
             {
-                !selectedFile ? (<button className="mb-6 mx-1 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                    onClick={handleButtonClick}>Add Image</button>) : (
-                    <div className='flex'>
+                selectedFiles.length === 0 ? (
+                    <button className="mb-6 mx-1 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        onClick={handleButtonClick}>Add Image</button>
+                ) : (
+                    <div className='flex flex-wrap'>
                         {imagePreview.map((preview, index) => (
                             <img
                                 key={index}
@@ -109,13 +116,12 @@ const Gallery = () => {
                             />
                         ))}
                         <button className="mb-6 mx-1 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded h-12"
-                            onClick={handleAddImage}>Upload Image</button>
+                            onClick={handleAddImage}>Upload Image{selectedFiles.length > 1 ? 's' : ''}</button>
                     </div>
                 )
             }
 
-            <div
-                className="gallery-scroll-area scrollbar-thin h-[75vh] overflow-y-auto p-4 rounded-lg grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="gallery-scroll-area scrollbar-thin h-[75vh] overflow-y-auto p-4 rounded-lg grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {images.map((img, index) => (
                     <div
                         key={img._id}

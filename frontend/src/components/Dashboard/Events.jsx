@@ -22,7 +22,6 @@ const Events = () => {
         setIsLoading(true);
         try {
             const response = await axios.get(`${import.meta.env.VITE_BACKEND_BASE_URL}/get-events`)
-            console.log(response.data)
             setEvents(response.data);
         } catch (error) {
             // console.error('Error fetching events:', error);
@@ -100,7 +99,7 @@ const Events = () => {
         }
     };
 
-    if (isLoading) return <div className="text-center mt-8"><Loader /></div>;
+    if (isLoading) return <div className="w-full h-[100vh] flex justify-center items-center"><Loader /></div>;
 
     return (
         <div className='container mx-auto px-4 py-8'>
@@ -111,7 +110,7 @@ const Events = () => {
                 Add new Event
             </button>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="gallery-scroll-area scrollbar-thin h-[75vh] overflow-y-auto p-4 rounded-lg grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {events.map((event) => (
                     <div key={event._id} className="bg-white p-4 rounded-lg shadow-lg">
                         <img src={event.image} alt={event.title} className="w-full h-48 object-cover mb-4" />

@@ -6,13 +6,13 @@ import TeamAndTestimonialPage from "./components/TeamAndTestimonialPage"
 
 function App() {
   return (
-    <>
+    <div className="gallery-scroll-area scrollbar-thin overflow-y-auto h-screen">
       <Homepage />
       <CampaignPage />
       <GalleryAndSponsorsPage />
       <TeamAndTestimonialPage />
       <Footer />
-    </>
+    </div>
   )
 }
 
