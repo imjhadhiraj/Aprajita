@@ -64,7 +64,7 @@ router.route('/logout').get(logout);
 // # Gallery routes 
 router.route('/upload-gallery-image').post(
     authAdmin,
-    upload.single('galleryImg'),
+    // upload.single('galleryImg'),
     uploadGalleryImage);
 
 router.route('/delete-gallery-image/:id').delete(authAdmin, deleteGalleryImage);

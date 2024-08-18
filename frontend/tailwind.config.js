@@ -24,6 +24,20 @@ export default {
         '.scrollbar-thin::-webkit-scrollbar-thumb:hover': {
           background: '#555',
         },
+        '.scrollbar-thin-main::-webkit-scrollbar': {
+          width: '8px',
+        },
+        '.scrollbar-thin-main::-webkit-scrollbar-track': {
+          'border-radius': '10px',
+          background: '#e0e0e0',
+        },
+        '.scrollbar-thin-main::-webkit-scrollbar-thumb': {
+          background: 'linear-gradient(180deg, #ff7f50, #ff4500)',
+          'border-radius': '10px',
+        },
+        '.scrollbar-thin-main::-webkit-scrollbar-thumb:hover': {
+          background: '#ff6347',
+        },
       });
     },
   ],

@@ -4,26 +4,23 @@ import { uploadOnCloudinary, deleteFromCloudinary } from '../utils/Cloudinary.ut
 export const uploadGalleryImage = async (req, res) => {
     try {
         const user = req.user;
-        const image = req.file;
-        if (!image) {
-            return res.status(400).json({ error: 'Image is required' });
+        const { images } = req.body;
+        if (!images || !Array.isArray(images) || images.length === 0) {
+            return res.status(400).json({ error: 'At least one image URL is required' });
         }
-        let imagePath = image.path;
-        imagePath = await uploadOnCloudinary(imagePath)
-        if (!imagePath)
-            return res.status(400).json({ error: 'Image upload failed' });
 
-        imagePath = imagePath.url
+        const galleryEntries = await Promise.all(images.map(async (imageUrl) => {
+            return await Gallery.create({
+                user: user._id,
+                image: imageUrl
+            });
+        }));
 
-        const gallery = await Gallery.create({
-            user: user._id,
-            image: imagePath
-        });
-        if (!gallery) {
+        if (galleryEntries.length === 0) {
             return res.status(400).json({ error: 'Image upload failed' });
         }
 
-        return res.status(200).json({ message: 'Image uploaded successfully' });
+        return res.status(200).json({ message: 'Images uploaded successfully' });
     } catch (error) {
         return res.status(400).json(error?.message);
     }
