@@ -12,6 +12,8 @@ import Gallery from './components/Dashboard/Gallery.jsx';
 import Events from './components/Dashboard/Events.jsx';
 import NotFoundPage from './components/NotFoundPage.jsx';
 import Welcome from './components/Dashboard/Welcome.jsx';
+import TeamMember from './components/Dashboard/TeamMember.jsx';
+import RegisterAdmin from './components/Dashboard/RegisterAdmin.jsx';
 
 const router = createBrowserRouter([
   {
@@ -38,6 +40,14 @@ const router = createBrowserRouter([
       {
         path: "events",
         element: <Events />
+      },
+      {
+        path: "team",
+        element: <TeamMember />
+      },
+      {
+        path: "register-admin",
+        element: <RegisterAdmin />
       }
     ]
   },

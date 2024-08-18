@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
-import Loader from '../Loader'; // Assuming you have a Loader component
+import { CalendarIcon, MapPinIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 
 const Events = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -11,41 +11,22 @@ const Events = () => {
     const [date, setDate] = useState('');
     const [location, setLocation] = useState('');
     const [photo, setPhoto] = useState(null);
-
     const [events, setEvents] = useState([]);
 
     useEffect(() => {
         fetchEvents();
-    }, [])
+    }, []);
 
     const fetchEvents = async () => {
         setIsLoading(true);
         try {
-            const response = await axios.get(`${import.meta.env.VITE_BACKEND_BASE_URL}/get-events`)
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_BASE_URL}/get-events`);
             setEvents(response.data);
         } catch (error) {
-            // console.error('Error fetching events:', error);
             toast.error(error.response?.data?.error || 'An error occurred while fetching events.');
-        }
-        finally {
+        } finally {
             setIsLoading(false);
         }
-    }
-
-    const openModal = () => {
-        setIsModalOpen(true);
-    };
-
-    const closeModal = () => {
-        setIsModalOpen(false);
-        setTitle('');
-        setDescription('');
-        setDate('');
-        setPhoto(null);
-    };
-
-    const handleFileChange = (event) => {
-        setPhoto(event.target.files[0]);
     };
 
     const handleSubmit = async (event) => {
@@ -61,21 +42,19 @@ const Events = () => {
 
         try {
             const response = await axios.post(`${import.meta.env.VITE_BACKEND_BASE_URL}/add-event`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
+                headers: { 'Content-Type': 'multipart/form-data' },
                 withCredentials: true,
             });
 
             if (response.status === 200) {
                 toast.success(response.data.message);
-                closeModal();
+                setIsModalOpen(false);
                 await fetchEvents();
             } else {
                 toast.error('Failed to add event.');
             }
         } catch (error) {
-            console.error('Error adding event:', error);
+            console.log(error)
             toast.error('An error occurred while adding the event.');
         } finally {
             setIsLoading(false);
@@ -91,129 +70,120 @@ const Events = () => {
             toast.success(response.data.message);
             await fetchEvents();
         } catch (error) {
-            // console.error('Error deleting event:', error);
             toast.error(error.response?.data?.error || 'An error occurred while deleting the event.');
-        }
-        finally {
+        } finally {
             setIsLoading(false);
         }
     };
 
-    if (isLoading) return <div className="w-full h-[100vh] flex justify-center items-center"><Loader /></div>;
-
     return (
-        <div className='container mx-auto px-4 py-8'>
-            <h1 className="text-3xl font-bold mb-6">Events</h1>
-            <button
-                className="mb-6 mx-1 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded h-12"
-                onClick={openModal}>
-                Add new Event
-            </button>
+        <div className="bg-gray-100 min-h-screen p-8">
+            <div className="max-w-6xl mx-auto">
+                <div className="flex justify-between items-center mb-8">
+                    <h1 className="text-4xl font-bold text-gray-800">Events</h1>
+                    <button
+                        onClick={() => setIsModalOpen(true)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg flex items-center transition duration-300 ease-in-out transform hover:scale-105"
+                    >
+                        <PlusIcon className="h-5 w-5 mr-2" />
+                        Add New Event
+                    </button>
+                </div>
 
-            <div className="gallery-scroll-area scrollbar-thin h-[75vh] overflow-y-auto p-4 rounded-lg grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {events.map((event) => (
-                    <div key={event._id} className="bg-white p-4 rounded-lg shadow-lg">
-                        <img src={event.image} alt={event.title} className="w-full h-48 object-cover mb-4" />
-                        <h2 className="text-xl font-bold mb-2">{event.title}</h2>
-                        <p className="text-gray-600 mb-2">{event.description}</p>
-                        <p className="text-gray-600 mb-2">{new Date(event.date).toDateString()}</p>
-                        <p className="text-gray-600 mb-2">{event.location}</p>
-                        <button
-                            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                            onClick={() => handleDeleteEvent(event._id)}>
-                            Delete
-                        </button>
+                {isLoading ? (
+                    <div className="flex justify-center items-center h-64">
+                        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
                     </div>
-                ))}
-            </div>
+                ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {events.map((event) => (
+                            <div key={event._id} className="bg-white rounded-lg shadow-lg overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-xl">
+                                <img src={event.image} alt={event.title} className="w-full h-48 object-cover" />
+                                <div className="p-6">
+                                    <h2 className="text-2xl font-bold text-gray-800 mb-2">{event.title}</h2>
+                                    <p className="text-gray-600 mb-4">{event.description}</p>
+                                    <div className="flex items-center text-gray-500 mb-2">
+                                        <CalendarIcon className="h-5 w-5 mr-2" />
+                                        <span>{new Date(event.date).toLocaleDateString()}</span>
+                                    </div>
+                                    <div className="flex items-center text-gray-500 mb-4">
+                                        <MapPinIcon className="h-5 w-5 mr-2" />
+                                        <span>{event.location}</span>
+                                    </div>
+                                    <button
+                                        onClick={() => handleDeleteEvent(event._id)}
+                                        className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg flex items-center transition duration-300 ease-in-out"
+                                    >
+                                        <TrashIcon className="h-5 w-5 mr-2" />
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
 
-            {isModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-                        <h2 className="text-xl font-bold mb-4">Add New Event</h2>
-                        <form onSubmit={handleSubmit}>
-                            <div className="mb-4">
-                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">
-                                    Title
-                                </label>
+                {isModalOpen && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                        <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
+                            <h2 className="text-3xl font-bold mb-6 text-gray-800">Add New Event</h2>
+                            <form onSubmit={handleSubmit}>
                                 <input
                                     type="text"
-                                    id="title"
                                     value={title}
                                     onChange={(e) => setTitle(e.target.value)}
-                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    placeholder="Event Title"
+                                    className="w-full mb-4 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     required
                                 />
-                            </div>
-                            <div className="mb-4">
-                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
-                                    Description
-                                </label>
                                 <textarea
-                                    id="description"
                                     value={description}
                                     onChange={(e) => setDescription(e.target.value)}
-                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    placeholder="Event Description"
+                                    className="w-full mb-4 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     required
                                 />
-                            </div>
-                            <div className="mb-4">
-                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="date">
-                                    Date
-                                </label>
                                 <input
                                     type="date"
-                                    id="date"
                                     value={date}
                                     onChange={(e) => setDate(e.target.value)}
-                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    className="w-full mb-4 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     required
                                 />
-                            </div>
-                            <div className="mb-4">
-                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="location">
-                                    Location
-                                </label>
                                 <input
                                     type="text"
-                                    id="location"
                                     value={location}
                                     onChange={(e) => setLocation(e.target.value)}
-                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    placeholder="Event Location"
+                                    className="w-full mb-4 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     required
                                 />
-                            </div>
-                            <div className="mb-4">
-                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="photo">
-                                    Photo
-                                </label>
                                 <input
                                     type="file"
-                                    id="photo"
-                                    onChange={handleFileChange}
-                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    onChange={(e) => setPhoto(e.target.files[0])}
+                                    className="w-full mb-6"
                                     required
                                 />
-                            </div>
-                            <div className="flex justify-end">
-                                <button
-                                    type="button"
-                                    onClick={closeModal}
-                                    className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                                >
-                                    Add Event
-                                </button>
-                            </div>
-                        </form>
+                                <div className="flex justify-end space-x-4">
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsModalOpen(false)}
+                                        className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out"
+                                    >
+                                        Add Event
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
+            </div>
         </div>
     );
 };

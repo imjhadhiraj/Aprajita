@@ -1,17 +1,30 @@
 import { mongoose } from "mongoose";
 
 const bannerSchema = new mongoose.Schema({
-    title: {
+    image: {
+        type: String,
+        required: true
+    }
+});
+
+const memberSchema = new mongoose.Schema({
+    name: {
         type: String,
         required: true
     },
-    description: {
+    position: {
         type: String,
         required: true
     },
     image: {
         type: String,
         required: true
+    },
+    socials: {
+        facebook: String,
+        twitter: String,
+        instagram: String,
+        linkedin: String
     }
 });
 
@@ -50,7 +63,7 @@ const eventSchema = new mongoose.Schema({
     }
 });
 
-
 export const Banner = mongoose.model('Banner', bannerSchema);
 export const Gallery = mongoose.model('Gallery', gallerySchema);
 export const Event = mongoose.model('Event', eventSchema);
+export const Member = mongoose.model('Member', memberSchema);

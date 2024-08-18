@@ -8,7 +8,7 @@ import mongoose from 'mongoose';
 import { loginAdmin, logout, profile, registerAdmin, updateProfile } from './controllers/User.controller.js';
 import { createPayment, storeVerifiedPayment } from './controllers/payment.controller.js';
 import { authAdmin } from './middlewares/authAdmin.middleware.js';
-import { addEvent, deleteEvent, deleteGalleryImage, getAllEvents, getGalleryImages, uploadGalleryImage } from './controllers/services.controller.js';
+import { addEvent, addTeamMember, deleteEvent, deleteGalleryImage, deleteTeamMember, getAllEvents, getAllTeamMembers, getGalleryImages, uploadGalleryImage } from './controllers/services.controller.js';
 
 dotenv.config();
 
@@ -78,6 +78,16 @@ router.route('/add-event').post(
 
 router.route('/delete-event/:id').delete(authAdmin, deleteEvent);
 router.route('/get-events').get(getAllEvents);
+
+
+// # Team Member routes
+router.route('/add-team-member').post(
+    authAdmin,
+    upload.single('profileImg'),
+    addTeamMember);
+
+router.route('/delete-team-member/:id').delete(authAdmin, deleteTeamMember);
+router.route('/get-team-members').get(getAllTeamMembers);
 
 // ----------- payment----------------
 router.route('/create-payment').post(createPayment)

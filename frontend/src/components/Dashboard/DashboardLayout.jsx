@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import useAdmin from '../../store/useAdmin'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import { Image, Calendar, Users, UserPlus } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast'
 import { LogOut, Menu, X } from 'lucide-react'
 
@@ -57,8 +58,42 @@ const DashboardLayout = () => {
                     </div>
                     <ul className="space-y-2 flex flex-col justify-between h-[calc(100%-8rem)]">
                         <div>
-                            <li><NavLink to="/admin-dashboard/gallery" className="flex items-center p-2 hover:bg-[#ea9633] rounded" onClick={() => setIsSidebarOpen(false)}>Gallery</NavLink></li>
-                            <li><NavLink to="/admin-dashboard/events" className="flex items-center p-2 hover:bg-[#ea9633] rounded" onClick={() => setIsSidebarOpen(false)}>Events</NavLink></li>
+                            <li>
+                                <NavLink
+                                    to="/admin-dashboard/gallery"
+                                    className="flex items-center p-2 hover:bg-[#ea9633] rounded"
+                                    onClick={() => setIsSidebarOpen(false)}
+                                >
+                                    <Image className="mr-2" /> Gallery
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink
+                                    to="/admin-dashboard/events"
+                                    className="flex items-center p-2 hover:bg-[#ea9633] rounded"
+                                    onClick={() => setIsSidebarOpen(false)}
+                                >
+                                    <Calendar className="mr-2" /> Events
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink
+                                    to="/admin-dashboard/team"
+                                    className="flex items-center p-2 hover:bg-[#ea9633] rounded"
+                                    onClick={() => setIsSidebarOpen(false)}
+                                >
+                                    <Users className="mr-2" /> Team Members
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink
+                                    to="/admin-dashboard/register-admin"
+                                    className="flex items-center p-2 hover:bg-[#ea9633] rounded"
+                                    onClick={() => setIsSidebarOpen(false)}
+                                >
+                                    <UserPlus className="mr-2" /> Register new Admin
+                                </NavLink>
+                            </li>
                         </div>
                         <li>
                             <button className="w-full mt-4 p-2 text-left hover:bg-gray-100 rounded flex items-center"
