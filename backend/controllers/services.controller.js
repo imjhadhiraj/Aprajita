@@ -1,4 +1,4 @@
-import { Banner, Gallery, Event } from '../models/services.model.js';
+import { Banner, Gallery, Event, Member } from '../models/services.model.js';
 import { uploadOnCloudinary, deleteFromCloudinary } from '../utils/Cloudinary.utils.js';
 
 export const uploadGalleryImage = async (req, res) => {
@@ -179,3 +179,76 @@ export const getAllEvents = async (req, res) => {
     }
 }
 
+export const addTeamMember = async (req, res) => {
+    try {
+        const { name, position, socialString } = req.body;
+        console.log(socialString)
+        const image = req.file;
+        if (!name || !position) {
+            return res.status(400).json({ error: 'All fields are required' });
+        }
+        let socials = {};
+        if (socialString) {
+            try {
+                socials = JSON.parse(socialString);
+            } catch (error) {
+                return res.status(400).json({ error: 'Invalid social media data' });
+            }
+        }
+        console.log(socials)
+        let imagePath = image?.path;
+        if (!imagePath) {
+            return res.status(400).json({ error: 'Image is required' });
+        }
+        imagePath = await uploadOnCloudinary(imagePath)
+        if (!imagePath)
+            return res.status(400).json({ error: 'Image upload failed' });
+
+        imagePath = imagePath.url
+
+        const teamMember = await Member.create({
+            name,
+            position,
+            socials,
+            image: imagePath
+        });
+        if (!teamMember) {
+            return res.status(400).json({ error: 'Image upload failed' });
+        }
+
+        return res.status(200).json({ message: 'Team Member Added Sucessfully' });
+    } catch (error) {
+        return res.status(400).json(error?.message);
+    }
+}
+
+export const deleteTeamMember = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const teamMember = await Member.findById(id);
+        if (!teamMember) {
+            return res.status(400).json({ error: 'Team Member not found' });
+        }
+        const deletedTeamMember = await Member.findByIdAndDelete(id);
+        if (!deletedTeamMember) {
+            return res.status(400).json({ error: 'Team Member delete failed' });
+        }
+        await deleteFromCloudinary(teamMember.image);
+        return res.status(200).json({ message: 'Team Member deleted successfully' });
+    }
+    catch (error) {
+        return res.status(400).json(error?.message);
+    }
+}
+
+export const getAllTeamMembers = async (req, res) => {
+    try {
+        const teamMembers = await Member.find();
+        if (!teamMembers) {
+            return res.status(400).json({ error: 'Team Members not found' });
+        }
+        return res.status(200).json(teamMembers);
+    } catch (error) {
+        return res.status(400).json(error?.message);
+    }
+}

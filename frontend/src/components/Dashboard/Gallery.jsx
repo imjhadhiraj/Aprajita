@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import Loader from "../Loader";
 import uploadToCloud from '../utils/uploadToCloud';
+import { PlusCircle, Trash2, Upload, X } from 'lucide-react';
 
 const Gallery = () => {
     const [images, setImages] = useState([]);
@@ -41,10 +41,6 @@ const Gallery = () => {
         }
     };
 
-    const handleButtonClick = () => {
-        fileInputRef.current.click();
-    };
-
     const handleFileChange = (event) => {
         const files = Array.from(event.target.files);
         setSelectedFiles(files);
@@ -70,7 +66,7 @@ const Gallery = () => {
 
             if (response.status === 200) {
                 toast.success(response.data.message);
-                fetchImages(); // Refresh the gallery
+                fetchImages();
             } else {
                 toast.error(response.data.error);
             }
@@ -88,80 +84,108 @@ const Gallery = () => {
         setIsModalOpen(true);
     };
 
-    if (isLoading) return <div className="w-full h-[100vh] flex justify-center items-center"><Loader /></div>;
-
     return (
-        <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold mb-6">Gallery</h1>
-            <input
-                type="file"
-                multiple
-                accept="image/*"
-                ref={fileInputRef}
-                className='hidden'
-                onChange={handleFileChange}
-            />
-            {
-                selectedFiles.length === 0 ? (
-                    <button className="mb-6 mx-1 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                        onClick={handleButtonClick}>Add Image</button>
-                ) : (
-                    <div className='flex flex-wrap'>
-                        {imagePreview.map((preview, index) => (
-                            <img
-                                key={index}
-                                className="object-contain h-32 mb-2 rounded-lg mr-2"
-                                src={preview}
-                                alt={`Selected ${index}`}
-                            />
-                        ))}
-                        <button className="mb-6 mx-1 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded h-12"
-                            onClick={handleAddImage}>Upload Image{selectedFiles.length > 1 ? 's' : ''}</button>
-                    </div>
-                )
-            }
+        <div className="bg-gray-100 min-h-screen p-8">
+            <div className="max-w-7xl mx-auto">
+                <h1 className="text-4xl font-bold mb-8 text-gray-800">Gallery</h1>
 
-            <div className="gallery-scroll-area scrollbar-thin h-[75vh] overflow-y-auto p-4 rounded-lg grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {images.map((img, index) => (
-                    <div
-                        key={img._id}
-                        className={`relative group ${index % 5 === 0 ? 'row-span-2' : ''} ${index % 7 === 0 ? 'col-span-2' : ''}`}>
-                        <img
-                            src={img.image}
-                            alt="Gallery item"
-                            className="w-full h-full object-cover rounded-lg"
-                        />
+                <div className="mb-8 bg-white p-6 rounded-lg shadow-md">
+                    <input
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        ref={fileInputRef}
+                        className="hidden"
+                        onChange={handleFileChange}
+                    />
+                    {selectedFiles.length === 0 ? (
                         <button
-                            onClick={() => openModal(img._id)}
-                            className="absolute top-2 right-2 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded hidden group-hover:block"
+                            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg flex items-center transition duration-300 ease-in-out transform hover:scale-105"
+                            onClick={() => fileInputRef.current.click()}
                         >
-                            Delete
+                            <PlusCircle className="h-5 w-5 mr-2" />
+                            Add Images
                         </button>
-                    </div>
-                ))}
-            </div>
-            {isModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg">
-                        <h2 className="text-xl font-bold mb-4">Confirm Delete</h2>
-                        <p className="mb-4">Are you sure you want to delete this image?</p>
-                        <div className="flex justify-end">
+                    ) : (
+                        <div>
+                            <div className="flex flex-wrap gap-4 mb-4">
+                                {imagePreview.map((preview, index) => (
+                                    <div key={index} className="relative">
+                                        <img
+                                            className="h-24 w-24 object-cover rounded-lg"
+                                            src={preview}
+                                            alt={`Selected ${index}`}
+                                        />
+                                        <button
+                                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition duration-300"
+                                            onClick={() => {
+                                                setSelectedFiles(selectedFiles.filter((_, i) => i !== index));
+                                                setImagePreview(imagePreview.filter((_, i) => i !== index));
+                                            }}
+                                        >
+                                            <X className="h-4 w-4" />
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
                             <button
-                                onClick={() => setIsModalOpen(false)}
-                                className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2"
+                                className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg flex items-center transition duration-300 ease-in-out transform hover:scale-105"
+                                onClick={handleAddImage}
                             >
-                                Cancel
-                            </button>
-                            <button
-                                onClick={() => handleDelete(imageToDelete)}
-                                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                            >
-                                Delete
+                                <Upload className="h-5 w-5 mr-2" />
+                                Upload Image{selectedFiles.length > 1 ? 's' : ''}
                             </button>
                         </div>
-                    </div>
+                    )}
                 </div>
-            )}
+
+                {isLoading ? (
+                    <div className="flex justify-center items-center h-64">
+                        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        {images.map((img) => (
+                            <div key={img._id} className="relative group">
+                                <img
+                                    src={img.image}
+                                    alt="Gallery item"
+                                    className="w-full h-64 object-cover rounded-lg shadow-md transition duration-300 ease-in-out transform group-hover:scale-105"
+                                />
+                                <button
+                                    onClick={() => openModal(img._id)}
+                                    className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition duration-300 ease-in-out transform hover:scale-110"
+                                >
+                                    <Trash2 className="h-5 w-5" />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {isModalOpen && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                        <div className="bg-white p-8 rounded-lg shadow-xl max-w-md w-full">
+                            <h2 className="text-2xl font-bold mb-4 text-gray-800">Confirm Delete</h2>
+                            <p className="mb-6 text-gray-600">Are you sure you want to delete this image? This action cannot be undone.</p>
+                            <div className="flex justify-end space-x-4">
+                                <button
+                                    onClick={() => setIsModalOpen(false)}
+                                    className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={() => handleDelete(imageToDelete)}
+                                    className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out"
+                                >
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
