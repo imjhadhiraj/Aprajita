@@ -20,6 +20,14 @@ const memberSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    description: {
+        type: String,
+        required: true
+    },
+    quote: {
+        type: String,
+        required: false
+    },
     socials: {
         facebook: String,
         twitter: String,
