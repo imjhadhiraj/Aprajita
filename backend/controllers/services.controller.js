@@ -1,5 +1,4 @@
 import { Banner, Gallery, Event, Member } from '../models/services.model.js';
-import { uploadOnCloudinary, deleteFromCloudinary } from '../utils/Cloudinary.utils.js';
 
 export const uploadGalleryImage = async (req, res) => {
     try {
@@ -58,22 +57,16 @@ export const getGalleryImages = async (req, res) => {
 
 export const addBannerImage = async (req, res) => {
     try {
-        const { title, description } = req.body;
-        const image = req.file;
+        const { title, description, image } = req.body;
+
         if (!title || !description || !image) {
             return res.status(400).json({ error: 'All fields are required' });
         }
-        let imagePath = image.path;
-        imagePath = await uploadOnCloudinary(imagePath)
-        if (!imagePath)
-            return res.status(400).json({ error: 'Image upload failed' });
-
-        imagePath = imagePath.url
 
         const banner = await Banner.create({
             title,
             description,
-            image: imagePath
+            image
         });
         if (!banner) {
             return res.status(400).json({ error: 'Image upload failed' });

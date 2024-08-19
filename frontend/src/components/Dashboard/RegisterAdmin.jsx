@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import uploadToCloud from '../utils/uploadToCloud';
 import toast from 'react-hot-toast';
 import { UserPlus, Mail, Lock, Image } from 'lucide-react';
 
@@ -35,16 +36,26 @@ const RegisterAdmin = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        const formData = new FormData();
-        Object.keys(adminData).forEach(key => {
-            if (adminData[key]) formData.append(key, adminData[key]);
-        });
 
         try {
-            const response = await axios.post(`${import.meta.env.VITE_BACKEND_BASE_URL}/register-admin`, formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
-                withCredentials: true
-            });
+            let profileImgUrl = null;
+            if (adminData.profileImg) {
+                profileImgUrl = await uploadToCloud(adminData.profileImg);
+            }
+
+            const adminDataToSend = {
+                name: adminData.name,
+                email: adminData.email,
+                password: adminData.password,
+                profileImg: profileImgUrl
+            };
+
+            const response = await axios.post(
+                `${import.meta.env.VITE_BACKEND_BASE_URL}/register-admin`,
+                adminDataToSend,
+                { withCredentials: true }
+            );
+
             toast.success(response.data.message);
             setAdminData({ name: '', email: '', password: '', profileImg: null });
             setPreviewImage(null);

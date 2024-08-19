@@ -1,6 +1,8 @@
 import Razorpay from 'razorpay';
 import crypto from 'crypto';
 import Payment from '../models/payment.model.js';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const instance = new Razorpay({
     key_id: process.env.RAZORPAY_API_KEY,

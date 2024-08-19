@@ -2,13 +2,12 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import path from 'path';
-import multer from 'multer';
 import mongoose from 'mongoose';
 import { loginAdmin, logout, profile, registerAdmin, updateProfile } from './controllers/User.controller.js';
 import { createPayment, storeVerifiedPayment } from './controllers/payment.controller.js';
 import { authAdmin } from './middlewares/authAdmin.middleware.js';
 import { addEvent, addTeamMember, deleteEvent, deleteGalleryImage, deleteTeamMember, getAllEvents, getAllTeamMembers, getGalleryImages, uploadGalleryImage } from './controllers/services.controller.js';
+import rateLimit from 'express-rate-limit';
 
 dotenv.config();
 
@@ -22,17 +21,6 @@ app.use(express.json());
 app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }));
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, './uploads/') // Define the destination folder
-    },
-    filename: function (req, file, cb) {
-        // Generate a new filename using the original name, timestamp, and extension
-        let fileNewName = path.parse(file.originalname.replace(/\s/g, '_')).name + '-' + Date.now() + path.extname(file.originalname);
-        cb(null, fileNewName) // Use the original file name with date
-    }
-});
-const upload = multer({ storage });
 const router = express.Router();
 app.use('/', router);
 
@@ -50,13 +38,18 @@ app.get('/health', (req, res) => {
     res.json({ message: 'Welcome to the API' });
 });
 
+const limiter = rateLimit({
+    windowMs: 5 * 60 * 1000,
+    max: 10,
+    message: "Too many requests, please try again later.",
+});
+
 // ----------admin auth routes----------------
 router.route('/register-admin').post(
     authAdmin,
-    upload.single('profileImg'),
     registerAdmin);
-router.route('/login-admin').post(loginAdmin);
-router.route('/update-admin').post(authAdmin, updateProfile);
+router.route('/login-admin').post(limiter, loginAdmin);
+router.route('/update-adminProfile').post(authAdmin, updateProfile);
 router.route('/admin-profile').post(authAdmin, profile);
 router.route('/logout').get(logout);
 //----------service routes----------------
@@ -64,7 +57,6 @@ router.route('/logout').get(logout);
 // # Gallery routes 
 router.route('/upload-gallery-image').post(
     authAdmin,
-    // upload.single('galleryImg'),
     uploadGalleryImage);
 
 router.route('/delete-gallery-image/:id').delete(authAdmin, deleteGalleryImage);
@@ -73,7 +65,6 @@ router.route('/get-gallery-images').get(getGalleryImages);
 // # Events routes
 router.route('/add-event').post(
     authAdmin,
-    // upload.single('eventImg'),
     addEvent);
 
 router.route('/delete-event/:id').delete(authAdmin, deleteEvent);

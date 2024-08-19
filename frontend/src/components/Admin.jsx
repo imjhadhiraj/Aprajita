@@ -4,6 +4,7 @@ import toast from 'react-hot-toast'
 import { Toaster } from 'react-hot-toast'
 import useAdmin from '../store/useAdmin'
 import { useNavigate } from 'react-router-dom'
+import ReCAPTCHA from "react-google-recaptcha";
 import Loader from './Loader'
 
 const Admin = () => {
@@ -14,6 +15,12 @@ const Admin = () => {
     const user = useAdmin((state) => state.user);
     const userLoaded = useAdmin((state) => state.userLoaded);
     const loadingUser = useAdmin((state) => state.loadingUser);
+
+    const [submit, setSubmit] = useState(false)
+
+    function onChange() {
+        setSubmit(true)
+    }
 
     const checkProfile = () => {
         axios.post(`${import.meta.env.VITE_BACKEND_BASE_URL}/admin-profile`, {},
@@ -122,9 +129,15 @@ const Admin = () => {
                         </div>
                     </div>
 
+                    <ReCAPTCHA
+                        sitekey={`${import.meta.env.VITE_CAPTCHA_SITE_KEY}`}
+                        onChange={onChange}
+                    />,
+
                     <div>
                         <button
                             type="submit"
+                            disabled={!submit}
                             className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                         >
                             Sign in
