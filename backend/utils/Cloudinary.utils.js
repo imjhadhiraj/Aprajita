@@ -21,9 +21,6 @@ const uploadOnCloudinary = async (localFilePath) => {
             secure: true,
         })
         fs.unlinkSync(localFilePath)
-        const secureUrl = response?.url.replace('http://', 'https://');
-        console.log(secureUrl)
-        response.url = secureUrl;
         return response;
     } catch (error) {
         console.log("error while uploading on cloudinary", error)

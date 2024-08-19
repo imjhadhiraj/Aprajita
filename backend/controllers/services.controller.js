@@ -68,7 +68,7 @@ export const addBannerImage = async (req, res) => {
         if (!imagePath)
             return res.status(400).json({ error: 'Image upload failed' });
 
-        imagePath = imagePath.url
+        imagePath = imagePath.secure_url
 
         const banner = await Banner.create({
             title,
@@ -127,7 +127,7 @@ export const addEvent = async (req, res) => {
         if (!imagePath)
             return res.status(400).json({ error: 'Image upload failed' });
 
-        imagePath = imagePath.url
+        imagePath = imagePath.secure_url
 
         const parsedDate = new Date(date);
 
@@ -204,7 +204,7 @@ export const addTeamMember = async (req, res) => {
         if (!imagePath)
             return res.status(400).json({ error: 'Image upload failed' });
 
-        imagePath = imagePath.url
+        imagePath = imagePath.secure_url
 
         const teamMember = await Member.create({
             name,

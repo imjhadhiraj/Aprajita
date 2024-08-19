@@ -23,7 +23,7 @@ export const registerAdmin = async (req, res) => {
             if (!profileImgPath)
                 return res.status(400).json({ error: 'Image upload failed' });
 
-            profileImgPath = profileImgPath.url
+            profileImgPath = profileImgPath.secure_url
         }
         const hashedPassword = bcrypt.hashSync(password, salt);
         const user = await User.create({
@@ -132,7 +132,7 @@ export const updateProfile = async (req, res) => { // only done by frontend not 
             profileImgPath = await uploadOnCloudinary(profileImgPath)
             if (!profileImgPath)
                 return res.status(400).json({ error: 'Image upload failed' });
-            profileImgPath = profileImgPath.url
+            profileImgPath = profileImgPath.secure_url
         }
         let hashedPassword = null;
         if (password && newPassword) {
