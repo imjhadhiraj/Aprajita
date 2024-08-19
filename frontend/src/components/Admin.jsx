@@ -77,49 +77,61 @@ const Admin = () => {
         }
     }
 
-    if (!userLoaded) return <div className='w-full h-[100vh] flex justify-center items-center'>
-        <Loader />
-    </div>
+    if (!userLoaded) return (
+        <div className='w-full h-screen flex justify-center items-center bg-gray-100'>
+            <Loader />
+        </div>
+    )
 
     return (
-        <div className='bg-gray-700 text-white h-screen p-0'>
-            <Toaster
-                position="top-right"
-                reverseOrder={false} />
-            <div className="flex flex-col w-2/3 mx-auto py-5 lg:w-2/4">
-                <h2 className="text-lg mb-1 font-medium title-font mx-auto">Login</h2>
-                {/* <p className="leading-relaxed mb-5 text-gray-600">Post-ironic portland shabby chic echo park, banjo fashion axe</p> */}
-                <div className="relative mb-4">
-                    <label htmlFor="email" className="leading-7 text-sm">Email <span className='text-red-500'>*</span></label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        placeholder='example@email.com'
-                        className="w-full bg-white rounded border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                        value={email}
-                        onChange={e => setEmail(e.target.value)}
-                    />
+        <div className='min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600 py-12 px-4 sm:px-6 lg:px-8'>
+            <Toaster position="top-right" reverseOrder={false} />
+            <div className='max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-2xl'>
+                <div>
+                    <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                        Admin Login
+                    </h2>
                 </div>
-                <div className="relative mb-4">
-                    <label htmlFor="password" className="leading-7 text-sm ">Password <span className='text-red-500'>*</span></label>
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        placeholder='Password'
-                        className="w-full bg-white rounded border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                        value={password}
-                        onChange={e => setPassword(e.target.value)}
-                    />
-                </div>
+                <form className="mt-8 space-y-6" onSubmit={(e) => { e.preventDefault(); handlesubmit(); }}>
+                    <div className="rounded-md shadow-sm -space-y-px">
+                        <div>
+                            <label htmlFor="email" className="sr-only">Email address</label>
+                            <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                required
+                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                                placeholder="Email address"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="password" className="sr-only">Password</label>
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                required
+                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm my-2"
+                                placeholder="Password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                        </div>
+                    </div>
 
-                <button
-                    className="text-white bg-blue-500 border-0 mb-2 py-2 px-6 focus:outline-none hover:bg-blue-600 rounded text-lg"
-                    onClick={handlesubmit}
-                >Login</button>
+                    <div>
+                        <button
+                            type="submit"
+                            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        >
+                            Sign in
+                        </button>
+                    </div>
+                </form>
             </div>
-
         </div>
     )
 }
