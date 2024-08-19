@@ -12,6 +12,8 @@ const TeamMember = () => {
         name: '',
         position: '',
         profileImg: null,
+        quote: '',
+        description: '',
         socials: {
             twitter: '',
             facebook: '',
@@ -51,6 +53,8 @@ const TeamMember = () => {
             const memberData = {
                 name: formData.name,
                 position: formData.position,
+                quote: formData.quote,
+                description: formData.description,
                 image: imageUrl,
                 socials: JSON.stringify(formData.socials),
             };
@@ -153,13 +157,13 @@ const TeamMember = () => {
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-8">
                         <h2 className="text-3xl font-bold mb-6 text-gray-800">Add New Member</h2>
-                        <form onSubmit={handleSubmit}>
+                        <form onSubmit={handleSubmit} className='max-h-[70vh] overflow-y-auto gallery-scroll-area scrollbar-thin h-screen'>
                             <input
                                 type="text"
                                 value={formData.name}
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                 placeholder="Name"
-                                className="w-full h-12 border border-gray-300 rounded-lg px-4 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-[90%] h-12 border border-gray-300 rounded-lg px-4 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 required
                             />
                             <input
@@ -167,14 +171,29 @@ const TeamMember = () => {
                                 value={formData.position}
                                 onChange={(e) => setFormData({ ...formData, position: e.target.value })}
                                 placeholder="Position"
-                                className="w-full h-12 border border-gray-300 rounded-lg px-4 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-[90%] h-12 border border-gray-300 rounded-lg px-4 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 required
                             />
                             <input
                                 type="file"
                                 onChange={(e) => setFormData({ ...formData, profileImg: e.target.files[0] })}
                                 accept="image/*"
-                                className="w-full mb-4"
+                                className="w-[90%] mb-4"
+                                required
+                            />
+                            <input
+                                type="text"
+                                value={formData.quote}
+                                onChange={(e) => setFormData({ ...formData, quote: e.target.value })}
+                                placeholder="Quote"
+                                className="w-[90%] h-12 border border-gray-300 rounded-lg px-4 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                required
+                            />
+                            <textarea
+                                value={formData.description}
+                                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                placeholder="Description"
+                                className="w-[90%] h-32 border border-gray-300 rounded-lg px-4 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 required
                             />
                             {['twitter', 'facebook', 'instagram', 'linkedin'].map((social) => (
@@ -187,7 +206,7 @@ const TeamMember = () => {
                                         socials: { ...formData.socials, [social]: e.target.value }
                                     })}
                                     placeholder={`${social.charAt(0).toUpperCase() + social.slice(1)} URL`}
-                                    className="w-full h-12 border border-gray-300 rounded-lg px-4 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-[90%] h-12 border border-gray-300 rounded-lg px-4 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
                             ))}
                             <div className="flex justify-end space-x-4">

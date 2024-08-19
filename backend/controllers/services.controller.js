@@ -1,4 +1,5 @@
 import { Banner, Gallery, Event, Member } from '../models/services.model.js';
+import { deleteFromCloudinary } from '../utils/Cloudinary.utils.js';
 
 export const uploadGalleryImage = async (req, res) => {
     try {
@@ -142,11 +143,11 @@ export const deleteEvent = async (req, res) => {
         if (!event) {
             return res.status(400).json({ error: 'Event not found' });
         }
+        await deleteFromCloudinary(event.image);
         const deletedEvemt = await Event.findByIdAndDelete(id);
         if (!deletedEvemt) {
             return res.status(400).json({ error: 'Event delete failed' });
         }
-        await deleteFromCloudinary(event.image);
         return res.status(200).json({ message: 'Event deleted successfully' });
     }
     catch (error) {
@@ -168,14 +169,16 @@ export const getAllEvents = async (req, res) => {
 
 export const addTeamMember = async (req, res) => {
     try {
-        const { name, position, socials, image } = req.body;
-        if (!name || !position || !image) {
+        const { name, position, socials, image, quote, description } = req.body;
+        if (!name || !position || !image || !quote || !description) {
             return res.status(400).json({ error: 'All fields are required' });
         }
         const socialJson = JSON.parse(socials);
         const teamMember = await Member.create({
             name,
             position,
+            quote,
+            description,
             socials: socialJson,
             image
         });

@@ -92,7 +92,7 @@ const DashboardLayout = () => {
                 </button>
             </nav>
 
-            <div className="flex-1 p-8 overflow-y-auto">
+            <div className="flex-1 p-8 overflow-y-auto gallery-scroll-area scrollbar-thin-main h-screen">
                 <Outlet />
             </div>
 
