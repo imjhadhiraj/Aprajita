@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
-import { CalendarIcon, MapPinIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { Calendar, MapPin, Plus, Trash } from 'lucide-react';
 
 const Events = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -27,6 +27,15 @@ const Events = () => {
         } finally {
             setIsLoading(false);
         }
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setTitle('');
+        setDescription('');
+        setDate('');
+        setLocation('');
+        setPhoto(null);
     };
 
     const handleSubmit = async (event) => {
@@ -58,6 +67,11 @@ const Events = () => {
             toast.error('An error occurred while adding the event.');
         } finally {
             setIsLoading(false);
+            setTitle('');
+            setDescription('');
+            setDate('');
+            setLocation('');
+            setPhoto(null);
         }
     };
 
@@ -85,7 +99,7 @@ const Events = () => {
                         onClick={() => setIsModalOpen(true)}
                         className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg flex items-center transition duration-300 ease-in-out transform hover:scale-105"
                     >
-                        <PlusIcon className="h-5 w-5 mr-2" />
+                        <Plus className="h-5 w-5 mr-2" />
                         Add New Event
                     </button>
                 </div>
@@ -103,18 +117,18 @@ const Events = () => {
                                     <h2 className="text-2xl font-bold text-gray-800 mb-2">{event.title}</h2>
                                     <p className="text-gray-600 mb-4">{event.description}</p>
                                     <div className="flex items-center text-gray-500 mb-2">
-                                        <CalendarIcon className="h-5 w-5 mr-2" />
+                                        <Calendar className="h-5 w-5 mr-2" />
                                         <span>{new Date(event.date).toLocaleDateString()}</span>
                                     </div>
                                     <div className="flex items-center text-gray-500 mb-4">
-                                        <MapPinIcon className="h-5 w-5 mr-2" />
+                                        <MapPin className="h-5 w-5 mr-2" />
                                         <span>{event.location}</span>
                                     </div>
                                     <button
                                         onClick={() => handleDeleteEvent(event._id)}
                                         className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg flex items-center transition duration-300 ease-in-out"
                                     >
-                                        <TrashIcon className="h-5 w-5 mr-2" />
+                                        <Trash className="h-5 w-5 mr-2" />
                                         Delete
                                     </button>
                                 </div>
@@ -167,7 +181,7 @@ const Events = () => {
                                 <div className="flex justify-end space-x-4">
                                     <button
                                         type="button"
-                                        onClick={() => setIsModalOpen(false)}
+                                        onClick={closeModal}
                                         className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out"
                                     >
                                         Cancel
