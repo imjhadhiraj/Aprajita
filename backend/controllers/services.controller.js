@@ -68,7 +68,7 @@ export const addBannerImage = async (req, res) => {
         if (!imagePath)
             return res.status(400).json({ error: 'Image upload failed' });
 
-        imagePath = imagePath.secure_url
+        imagePath = imagePath.url
 
         const banner = await Banner.create({
             title,
@@ -117,17 +117,10 @@ export const getBannerImages = async (req, res) => {
 
 export const addEvent = async (req, res) => {
     try {
-        const { title, description, date, location } = req.body;
-        const image = req.file;
-        if (!title || !description || !date || !location) {
+        const { title, description, date, location, image } = req.body;
+        if (!title || !description || !date || !location || !image) {
             return res.status(400).json({ error: 'All fields are required' });
         }
-        let imagePath = image.path;
-        imagePath = await uploadOnCloudinary(imagePath)
-        if (!imagePath)
-            return res.status(400).json({ error: 'Image upload failed' });
-
-        imagePath = imagePath.secure_url
 
         const parsedDate = new Date(date);
 
@@ -136,14 +129,15 @@ export const addEvent = async (req, res) => {
             description,
             date: parsedDate,
             location,
-            image: imagePath
+            image
         });
         if (!event) {
-            return res.status(400).json({ error: 'Image upload failed' });
+            return res.status(400).json({ error: 'Failed to create event' });
         }
 
-        return res.status(200).json({ message: 'Event Added Sucessfully' });
+        return res.status(200).json({ message: 'Event Added Successfully' });
     } catch (error) {
+        console.log('Error in add-event route: ', error);
         return res.status(400).json(error?.message);
     }
 }
@@ -181,43 +175,24 @@ export const getAllEvents = async (req, res) => {
 
 export const addTeamMember = async (req, res) => {
     try {
-        const { name, position, socialString } = req.body;
-        console.log(socialString)
-        const image = req.file;
-        if (!name || !position) {
+        const { name, position, socials, image } = req.body;
+        if (!name || !position || !image) {
             return res.status(400).json({ error: 'All fields are required' });
         }
-        let socials = {};
-        if (socialString) {
-            try {
-                socials = JSON.parse(socialString);
-            } catch (error) {
-                return res.status(400).json({ error: 'Invalid social media data' });
-            }
-        }
-        console.log(socials)
-        let imagePath = image?.path;
-        if (!imagePath) {
-            return res.status(400).json({ error: 'Image is required' });
-        }
-        imagePath = await uploadOnCloudinary(imagePath)
-        if (!imagePath)
-            return res.status(400).json({ error: 'Image upload failed' });
-
-        imagePath = imagePath.secure_url
-
+        const socialJson = JSON.parse(socials);
         const teamMember = await Member.create({
             name,
             position,
-            socials,
-            image: imagePath
+            socials: socialJson,
+            image
         });
         if (!teamMember) {
-            return res.status(400).json({ error: 'Image upload failed' });
+            return res.status(400).json({ error: 'Failed to create team member' });
         }
 
-        return res.status(200).json({ message: 'Team Member Added Sucessfully' });
+        return res.status(200).json({ message: 'Team Member Added Successfully' });
     } catch (error) {
+        console.log('Error in add-team-member route: ', error);
         return res.status(400).json(error?.message);
     }
 }

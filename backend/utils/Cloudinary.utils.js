@@ -12,19 +12,28 @@ cloudinary.config({
 
 const uploadOnCloudinary = async (localFilePath) => {
     try {
-        if (!localFilePath) {
-            console.log("file not exits", localFilePath)
-            return null
+        if (!fs.existsSync(localFilePath)) {
+            console.error("File does not exist:", localFilePath);
+            return null;
         }
+
         const response = await cloudinary.uploader.upload(localFilePath, {
             resource_type: "auto",
             secure: true,
-        })
-        fs.unlinkSync(localFilePath)
+        });
+
+        console.log(localFilePath)
+
+        fs.unlinkSync(localFilePath); // Delete the file after uploading
+
+        const secureUrl = response?.secure_url || response?.url.replace('http://', 'https://');
+        response.url = secureUrl;
         return response;
     } catch (error) {
-        console.log("error while uploading on cloudinary", error)
-        fs.unlinkSync(localFilePath)
+        console.error("Error while uploading to Cloudinary:", error);
+        if (fs.existsSync(localFilePath)) {
+            fs.unlinkSync(localFilePath); // Ensure the file is deleted if an error occurs
+        }
         return null;
     }
 }

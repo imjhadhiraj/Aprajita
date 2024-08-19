@@ -73,7 +73,7 @@ router.route('/get-gallery-images').get(getGalleryImages);
 // # Events routes
 router.route('/add-event').post(
     authAdmin,
-    upload.single('eventImg'),
+    // upload.single('eventImg'),
     addEvent);
 
 router.route('/delete-event/:id').delete(authAdmin, deleteEvent);
@@ -83,7 +83,7 @@ router.route('/get-events').get(getAllEvents);
 // # Team Member routes
 router.route('/add-team-member').post(
     authAdmin,
-    upload.single('profileImg'),
+    // upload.single('profileImg'),
     addTeamMember);
 
 router.route('/delete-team-member/:id').delete(authAdmin, deleteTeamMember);

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import uploadToCloud from '../utils/uploadToCloud';
 import { Calendar, MapPin, Plus, Trash } from 'lucide-react';
 
 const Events = () => {
@@ -41,17 +42,21 @@ const Events = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         setIsLoading(true);
-
-        const formData = new FormData();
-        formData.append('title', title);
-        formData.append('description', description);
-        formData.append('date', date);
-        formData.append('location', location);
-        formData.append('eventImg', photo);
-
         try {
-            const response = await axios.post(`${import.meta.env.VITE_BACKEND_BASE_URL}/add-event`, formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
+            const imageUrl = await uploadToCloud(photo);
+
+            if (!imageUrl) {
+                throw new Error('Failed to upload image');
+            }
+
+            const eventData = {
+                title,
+                description,
+                date,
+                location,
+                image: imageUrl // Use the Cloudinary URL
+            };
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_BASE_URL}/add-event`, eventData, {
                 withCredentials: true,
             });
 

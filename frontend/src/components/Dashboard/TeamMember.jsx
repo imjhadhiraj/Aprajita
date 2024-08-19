@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import uploadToCloud from '../utils/uploadToCloud';
 import { Facebook, Instagram, Linkedin, Twitter } from 'lucide-react';
 
 const TeamMember = () => {
@@ -39,18 +40,24 @@ const TeamMember = () => {
         event.preventDefault();
         setIsLoading(true);
 
-        const formDataToSend = new FormData();
-        formDataToSend.append('name', formData.name);
-        formDataToSend.append('position', formData.position);
-        formDataToSend.append('profileImg', formData.profileImg);
-        formDataToSend.append('socialString', JSON.stringify(formData.socials));
-
         try {
+            const imageUrl = await uploadToCloud(formData.profileImg);
+
+            if (!imageUrl) {
+                throw new Error('Failed to upload image');
+            }
+
+            // Prepare the data to send to the backend
+            const memberData = {
+                name: formData.name,
+                position: formData.position,
+                image: imageUrl,
+                socials: JSON.stringify(formData.socials),
+            };
             const response = await axios.post(
                 `${import.meta.env.VITE_BACKEND_BASE_URL}/add-team-member`,
-                formDataToSend,
+                memberData,
                 {
-                    headers: { 'Content-Type': 'multipart/form-data' },
                     withCredentials: true,
                 }
             );
