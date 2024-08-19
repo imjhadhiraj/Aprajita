@@ -10,34 +10,6 @@ cloudinary.config({
     secure: true
 });
 
-const uploadOnCloudinary = async (localFilePath) => {
-    try {
-        if (!fs.existsSync(localFilePath)) {
-            console.error("File does not exist:", localFilePath);
-            return null;
-        }
-
-        const response = await cloudinary.uploader.upload(localFilePath, {
-            resource_type: "auto",
-            secure: true,
-        });
-
-        console.log(localFilePath)
-
-        fs.unlinkSync(localFilePath); // Delete the file after uploading
-
-        const secureUrl = response?.secure_url || response?.url.replace('http://', 'https://');
-        response.url = secureUrl;
-        return response;
-    } catch (error) {
-        console.error("Error while uploading to Cloudinary:", error);
-        if (fs.existsSync(localFilePath)) {
-            fs.unlinkSync(localFilePath); // Ensure the file is deleted if an error occurs
-        }
-        return null;
-    }
-}
-
 const deleteFromCloudinary = async (imageUrl) => {
     try {
         const publicId = imageUrl.split('/').pop().split('.')[0];
@@ -52,4 +24,4 @@ const deleteFromCloudinary = async (imageUrl) => {
     }
 }
 
-export { uploadOnCloudinary, deleteFromCloudinary };
+export { deleteFromCloudinary };
