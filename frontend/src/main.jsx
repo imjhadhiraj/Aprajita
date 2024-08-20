@@ -14,6 +14,7 @@ import NotFoundPage from './components/NotFoundPage.jsx';
 import Welcome from './components/Dashboard/Welcome.jsx';
 import TeamMember from './components/Dashboard/TeamMember.jsx';
 import RegisterAdmin from './components/Dashboard/RegisterAdmin.jsx';
+import PaymentSuccessPage from './components/PaymentSuccessPage.jsx';
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
   {
     path: "/admin",
     element: <Admin />,
+  },
+  {
+    path: "/payment-success/:razorpay_payment_id",
+    element: <PaymentSuccessPage />,
   },
   {
     path: "/admin-dashboard",

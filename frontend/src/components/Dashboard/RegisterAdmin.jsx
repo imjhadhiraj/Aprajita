@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import uploadToCloud from '../utils/uploadToCloud';
+import uploadToCloud from '../../utils/uploadToCloud';
 import toast from 'react-hot-toast';
 import { UserPlus, Mail, Lock, Image } from 'lucide-react';
 
@@ -36,9 +36,14 @@ const RegisterAdmin = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
+        if (adminData.password.length < 6) {
+            toast.error('Password must be at least 6 characters long');
+            setLoading(false);
+            return;
+        }
 
+        let profileImgUrl = null;
         try {
-            let profileImgUrl = null;
             if (adminData.profileImg) {
                 profileImgUrl = await uploadToCloud(adminData.profileImg);
             }
@@ -60,8 +65,13 @@ const RegisterAdmin = () => {
             setAdminData({ name: '', email: '', password: '', profileImg: null });
             setPreviewImage(null);
         } catch (error) {
-            console.error(error);
-            toast.error(error.response?.data?.message || 'An error occurred');
+            toast.error(error.response?.data?.error || 'An error occurred');
+            await axios.delete(`${import.meta.env.VITE_BACKEND_BASE_URL}/delete-cloudinary-image`, {
+                headers: {
+                    url: profileImgUrl
+                },
+                withCredentials: true,
+            });
         } finally {
             setLoading(false);
         }

@@ -20,7 +20,7 @@ const DashboardLayout = () => {
 
     const handleSignOut = async () => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_BACKEND_BASE_URL}/logout`, { withCredentials: true })
+            const res = await axios.post(`${import.meta.env.VITE_BACKEND_BASE_URL}/logout`, {}, { withCredentials: true })
             if (res.status === 200) {
                 toast.success(res?.data?.message || 'Signed out successfully')
                 navigate("/admin")

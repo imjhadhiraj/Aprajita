@@ -1,15 +1,17 @@
-import CampaignPage from "./components/CampaignPage"
+import { Toaster } from "react-hot-toast"
+import CampaignPage from "./components/CampaignAndEventPage"
 import Footer from "./components/Footer"
-import GalleryAndSponsorsPage from "./components/GalleryAndSponserPage"
+import GalleryPage from "./components/GalleryPage"
 import Homepage from "./components/HomePage"
 import TeamAndTestimonialPage from "./components/TeamAndTestimonialPage"
 
 function App() {
   return (
     <div className="gallery-scroll-area scrollbar-thin overflow-y-auto h-screen">
+      <Toaster />
       <Homepage />
       <CampaignPage />
-      <GalleryAndSponsorsPage />
+      <GalleryPage />
       <TeamAndTestimonialPage />
       <Footer />
     </div>

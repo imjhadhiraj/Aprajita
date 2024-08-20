@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import uploadToCloud from '../utils/uploadToCloud';
+import uploadToCloud from '../../utils/uploadToCloud';
 import { PlusCircle, Trash2, Upload, X } from 'lucide-react';
 
 const Gallery = () => {
@@ -36,6 +36,7 @@ const Gallery = () => {
             toast.success(res.data.message);
         } catch (err) {
             toast.error(err?.response?.data?.error || 'Failed to delete image');
+
         } finally {
             setIsModalOpen(false);
         }
@@ -72,6 +73,7 @@ const Gallery = () => {
             }
         } catch (error) {
             toast.error(error?.response?.data?.error || 'Failed to upload image');
+
         } finally {
             setSelectedFiles([]);
             setImagePreview([]);
