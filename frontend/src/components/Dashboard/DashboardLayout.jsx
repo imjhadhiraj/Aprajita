@@ -31,6 +31,9 @@ const DashboardLayout = () => {
             console.error(error)
             toast.error("Something went wrong")
         }
+        finally {
+            closeSignOutModal()
+        }
     }
 
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen)
@@ -110,10 +113,7 @@ const DashboardLayout = () => {
                             </button>
                             <button
                                 className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors duration-200"
-                                onClick={() => {
-                                    closeSignOutModal()
-                                    handleSignOut()
-                                }}
+                                onClick={handleSignOut}
                             >
                                 Sign Out
                             </button>
