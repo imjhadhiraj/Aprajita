@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
-import uploadToCloud from '../utils/uploadToCloud';
+import uploadToCloud from '../../utils/uploadToCloud';
 import { Calendar, MapPin, Plus, Trash } from 'lucide-react';
 
 const Events = () => {

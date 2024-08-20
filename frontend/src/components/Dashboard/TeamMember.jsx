@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
-import uploadToCloud from '../utils/uploadToCloud';
+import uploadToCloud from '../../utils/uploadToCloud';
 import { Facebook, Instagram, Linkedin, Twitter } from 'lucide-react';
 
 const TeamMember = () => {
@@ -75,6 +75,12 @@ const TeamMember = () => {
             }
         } catch (error) {
             toast.error(error.response?.data?.error || 'An error occurred while adding the member.');
+            await axios.delete(`${import.meta.env.VITE_BACKEND_BASE_URL}/delete-cloudinary-image`, {
+                headers: {
+                    url: formData.profileImg
+                },
+                withCredentials: true,
+            });
         } finally {
             setIsLoading(false);
         }

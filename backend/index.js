@@ -4,9 +4,9 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
 import { loginAdmin, logout, profile, registerAdmin, updateProfile } from './controllers/User.controller.js';
-import { createPayment, storeVerifiedPayment } from './controllers/payment.controller.js';
+import { createPayment, getPaymentById, storeVerifiedPayment } from './controllers/payment.controller.js';
 import { authAdmin } from './middlewares/authAdmin.middleware.js';
-import { addEvent, addTeamMember, deleteEvent, deleteGalleryImage, deleteTeamMember, getAllEvents, getAllTeamMembers, getGalleryImages, uploadGalleryImage } from './controllers/services.controller.js';
+import { addEvent, addTeamMember, deleteEvent, deleteGalleryImage, deleteTeamMember, deleteUnusedImage, getAllEvents, getAllTeamMembers, getGalleryImages, uploadGalleryImage } from './controllers/services.controller.js';
 import rateLimit from 'express-rate-limit';
 
 dotenv.config();
@@ -51,8 +51,11 @@ router.route('/register-admin').post(
 router.route('/login-admin').post(limiter, loginAdmin);
 router.route('/update-adminProfile').post(authAdmin, updateProfile);
 router.route('/admin-profile').post(authAdmin, profile);
-router.route('/logout').get(logout);
+router.route('/logout').post(logout);
 //----------service routes----------------
+
+// # delete cloudinary unused image 
+router.route('/delete-cloudinary-image').delete(authAdmin, deleteUnusedImage);
 
 // # Gallery routes 
 router.route('/upload-gallery-image').post(
@@ -83,7 +86,7 @@ router.route('/get-team-members').get(getAllTeamMembers);
 // ----------- payment----------------
 router.route('/create-payment').post(createPayment)
 router.route('/verify-payment').post(storeVerifiedPayment);
-
+router.route('/get-payment-data/:id').get(getPaymentById);
 
 app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`);

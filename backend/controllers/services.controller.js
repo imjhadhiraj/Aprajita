@@ -223,3 +223,17 @@ export const getAllTeamMembers = async (req, res) => {
         return res.status(400).json(error?.message);
     }
 }
+
+export const deleteUnusedImage = async (req, res) => {
+    try {
+        const url = req.headers?.url;
+        if (!url) {
+            return res.status(400).json({ error: 'Image URL is required' });
+        }
+        await deleteFromCloudinary(url);
+        console.log("deleted unused image");
+        return res.status(200).json({ message: 'Image deleted successfully' });
+    } catch (error) {
+        return res.status(400).json(error?.message);
+    }
+}
