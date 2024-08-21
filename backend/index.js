@@ -6,7 +6,7 @@ import mongoose from 'mongoose';
 import { loginAdmin, logout, profile, registerAdmin, updateProfile } from './controllers/User.controller.js';
 import { createPayment, getPaymentById, storeVerifiedPayment } from './controllers/payment.controller.js';
 import { authAdmin } from './middlewares/authAdmin.middleware.js';
-import { addEvent, addTeamMember, deleteEvent, deleteGalleryImage, deleteTeamMember, deleteUnusedImage, getAllEvents, getAllTeamMembers, getGalleryImages, uploadGalleryImage } from './controllers/services.controller.js';
+import { addEvent, addTeamMember, deleteEvent, deleteGalleryImage, deleteTeamMember, deleteUnusedImage, getAllEvents, getAllGalleryImages, getAllTeamMembers, getGalleryImages, uploadGalleryImage } from './controllers/services.controller.js';
 import rateLimit from 'express-rate-limit';
 
 dotenv.config();
@@ -64,6 +64,7 @@ router.route('/upload-gallery-image').post(
 
 router.route('/delete-gallery-image/:id').delete(authAdmin, deleteGalleryImage);
 router.route('/get-gallery-images').get(getGalleryImages);
+router.route('/get-all-gallery-images').get(getAllGalleryImages);
 
 // # Events routes
 router.route('/add-event').post(

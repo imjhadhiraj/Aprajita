@@ -19,6 +19,8 @@ const adminUserSchema = new mongoose.Schema({
     profileImg: {
         type: String
     }
+}, {
+    timestamps: true
 });
 
 const AdminUser = mongoose.model('AdminUser', adminUserSchema);

@@ -28,7 +28,7 @@ const PaymentSuccessPage = () => {
         } catch (error) {
             console.log(error);
             toast.error('Invalid payment request');
-            navigate('/');
+            // navigate('/');
         }
     }
 
