@@ -13,7 +13,6 @@ const GalleryPage = () => {
         try {
             const response = await axios.get(`${import.meta.env.VITE_BACKEND_BASE_URL}/get-gallery-images`);
             setImages(response.data);
-            console.log(response.data)
         } catch (err) {
             console.log(err)
         }

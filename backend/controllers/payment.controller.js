@@ -28,7 +28,6 @@ export const createPayment = async (req, res) => {
 export const storeVerifiedPayment = async (req, res) => {
     try {
         const { name, email, amount, date, phone, razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
-        console.log('Received payment data:', req.body);
         const body = razorpay_order_id + "|" + razorpay_payment_id;
         const signature = crypto
             .createHmac("sha256", process.env.RAZORPAY_API_SECRET)
