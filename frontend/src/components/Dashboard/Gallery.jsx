@@ -20,7 +20,7 @@ const Gallery = () => {
     const fetchImages = async () => {
         setIsLoading(true);
         try {
-            const response = await axios.get(`${import.meta.env.VITE_BACKEND_BASE_URL}/get-gallery-images`);
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_BASE_URL}/get-all-gallery-images`);
             setImages(response.data);
         } catch (err) {
             toast.error(err?.response?.data?.error || 'Failed to fetch images');

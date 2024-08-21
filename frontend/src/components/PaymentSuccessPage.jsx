@@ -14,6 +14,8 @@ const PaymentSuccessPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const currentUrl = window.location.origin + location.pathname + location.search;
+    const [errorPayment, setErrorPayment] = useState(false);
+
     const fetchPaymentSuccessData = async () => {
         try {
             const res = await axios.get(`${import.meta.env.VITE_BACKEND_BASE_URL}/get-payment-data/${razorpay_payment_id}`);
@@ -28,8 +30,12 @@ const PaymentSuccessPage = () => {
         } catch (error) {
             console.log(error);
             toast.error('Invalid payment request');
-            // navigate('/');
+            setErrorPayment(true);
         }
+    }
+
+    const goToHomePage = () => {
+        navigate('/');
     }
 
     useEffect(() => {
@@ -47,6 +53,38 @@ const PaymentSuccessPage = () => {
         };
         html2pdf().set(opt).from(element).save();
     };
+
+    if (errorPayment) {
+        return (
+            <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-r from-red-400 to-red-500">
+                <div className="bg-white p-10 rounded-xl shadow-lg text-center">
+                    <div className="flex gap-2">
+                        <svg
+                            className="w-10 h-10 text-red-600 mb-4"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        >
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12" y2="16"></line>
+                        </svg>
+                        <h2 className="text-2xl font-bold text-red-600 mb-2">Invalid Payment Id</h2>
+                    </div>
+                    <p className="text-gray-700 mb-4">Invalid payment details. Please try again.</p>
+                    <button
+                        className="bg-red-600 text-white py-2 px-4 rounded-lg"
+                        onClick={() => navigate('/')}
+                    >
+                        Go to Home Page
+                    </button>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-r from-green-400 to-green-500">
@@ -129,6 +167,14 @@ const PaymentSuccessPage = () => {
                         }}
                     >
                         <Share className="mr-2" /> Share Receipt
+                    </button>
+                </div>
+                <div className="flex justify-center">
+                    <button
+                        className="bg-blue-600 text-white py-2 px-4 rounded-lg mt-4"
+                        onClick={goToHomePage}
+                    >
+                        Go to Home Page
                     </button>
                 </div>
             </div>
