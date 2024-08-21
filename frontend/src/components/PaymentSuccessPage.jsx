@@ -19,7 +19,6 @@ const PaymentSuccessPage = () => {
             const res = await axios.get(`${import.meta.env.VITE_BACKEND_BASE_URL}/get-payment-data/${razorpay_payment_id}`);
 
             if (res.status === 200) {
-                console.log(res.data.payment);
                 setPaymentData(res.data.payment);
             }
             else {
