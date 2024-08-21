@@ -5,7 +5,7 @@ const bannerSchema = new mongoose.Schema({
         type: String,
         required: true
     }
-});
+}, { timestamps: true });
 
 const memberSchema = new mongoose.Schema({
     name: {
@@ -34,7 +34,7 @@ const memberSchema = new mongoose.Schema({
         instagram: String,
         linkedin: String
     }
-});
+}, { timstamps: true });
 
 const gallerySchema = new mongoose.Schema({
     user: {
@@ -46,7 +46,7 @@ const gallerySchema = new mongoose.Schema({
         type: String,
         required: true
     }
-});
+}, { timestamps: true });
 
 const eventSchema = new mongoose.Schema({
     title: {
@@ -69,7 +69,7 @@ const eventSchema = new mongoose.Schema({
         type: String,
         required: true
     }
-});
+}, { timestamps: true });
 
 export const Banner = mongoose.model('Banner', bannerSchema);
 export const Gallery = mongoose.model('Gallery', gallerySchema);

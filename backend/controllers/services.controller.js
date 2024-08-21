@@ -46,7 +46,19 @@ export const deleteGalleryImage = async (req, res) => {
 
 export const getGalleryImages = async (req, res) => {
     try {
-        const gallery = await Gallery.find();
+        const gallery = await Gallery.find().sort({ createdAt: -1 }).limit(15);
+        if (!gallery) {
+            return res.status(400).json({ error: 'Images not found' });
+        }
+        return res.status(200).json(gallery);
+    } catch (error) {
+        return res.status(400).json(error?.message);
+    }
+}
+
+export const getAllGalleryImages = async (req, res) => {
+    try {
+        const gallery = await Gallery.find().sort({ createdAt: -1 });
         if (!gallery) {
             return res.status(400).json({ error: 'Images not found' });
         }
@@ -157,7 +169,7 @@ export const deleteEvent = async (req, res) => {
 
 export const getAllEvents = async (req, res) => {
     try {
-        const event = await Event.find();
+        const event = await Event.find().sort({ createdAt: -1 });
         if (!event) {
             return res.status(400).json({ error: 'Events not found' });
         }
@@ -214,7 +226,7 @@ export const deleteTeamMember = async (req, res) => {
 
 export const getAllTeamMembers = async (req, res) => {
     try {
-        const teamMembers = await Member.find();
+        const teamMembers = await Member.find().sort({ createdAt: -1 });
         if (!teamMembers) {
             return res.status(400).json({ error: 'Team Members not found' });
         }
