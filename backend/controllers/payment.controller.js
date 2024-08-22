@@ -70,3 +70,19 @@ export const getPaymentById = async (req, res) => {
         return res.status(500).json({ message: "Internal Server Error" });
     }
 }
+
+export const getAllPayments = async (req, res) => {
+    try {
+        const payments = await Payment.find();
+
+        if (payments.length === 0) {
+            return res.status(404).json({ message: "Payment not found" });
+        }
+
+        return res.status(200).json({ payments });
+    }
+    catch (error) {
+        console.log(error)
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+}

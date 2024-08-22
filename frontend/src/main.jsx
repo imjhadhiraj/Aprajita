@@ -15,6 +15,7 @@ import Welcome from './components/Dashboard/Welcome.jsx';
 import TeamMember from './components/Dashboard/TeamMember.jsx';
 import RegisterAdmin from './components/Dashboard/RegisterAdmin.jsx';
 import PaymentSuccessPage from './components/PaymentSuccessPage.jsx';
+import AllPayments from './components/Dashboard/AllPayments.jsx';
 
 const router = createBrowserRouter([
   {
@@ -53,6 +54,10 @@ const router = createBrowserRouter([
       {
         path: "register-admin",
         element: <RegisterAdmin />
+      },
+      {
+        path: "get-all-paymentDetails",
+        element: <AllPayments />
       }
     ]
   },
