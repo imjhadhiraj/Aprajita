@@ -42,11 +42,11 @@ const Footer = () => (
                         <li>Anant Samarthya Sampanna 2022</li>
                     </ul>
                 </div>
-                <div>
+                <div id='contact'>
                     <h4 className="font-bold mb-4">Contact Us</h4>
                     <ul className="space-y-2">
                         <li className="flex items-center">
-                            <MapPin size={16} className="mr-2" /> 
+                            <MapPin size={16} className="mr-2" />
                             New Delhi, India
                         </li>
                         <li className="flex items-center">

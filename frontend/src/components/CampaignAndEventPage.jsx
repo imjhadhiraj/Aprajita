@@ -36,7 +36,7 @@ const CampaignPage = () => {
     return (
         <div className="font-sans">
             {/* Campaign Cards */}
-            <div className="flex md:justify-between gap-2 p-8 bg-orange-100 flex-wrap md:flex-nowrap">
+            <div id='campaign' className="flex md:justify-between gap-2 p-8 bg-orange-100 flex-wrap md:flex-nowrap">
                 {campaignContent.map((item, index) => (
                     <div key={index} className=" bg-white p-4 rounded-lg shadow-md">
                         <div className="w-12 h-12 bg-orange-500 rounded-full mb-4 flex items-center justify-center text-white">
@@ -50,7 +50,7 @@ const CampaignPage = () => {
             </div>
 
             {/* Latest Events */}
-            <div className="p-8">
+            <div id='events' className="p-8">
                 <h2 className="text-2xl font-bold mb-4">Latest Events</h2>
                 <div className="flex flex-wrap">
                     {latestEvents.map((event) => (

@@ -18,7 +18,6 @@ export const createPayment = async (req, res) => {
     };
     instance.orders.create(options, function (err, order) {
         if (err) {
-            console.log(err)
             return res.status(500).json({ message: "Something went wrong", err });
         }
         return res.status(200).json({ order });
@@ -27,6 +26,7 @@ export const createPayment = async (req, res) => {
 
 export const storeVerifiedPayment = async (req, res) => {
     try {
+        // console.log(req.body)
         const { name, email, amount, date, phone, razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
         const body = razorpay_order_id + "|" + razorpay_payment_id;
         const signature = crypto

@@ -43,7 +43,7 @@ const GalleryPage = () => {
     };
 
     return (
-        <section className="py-12 bg-white">
+        <section id='gallery' className="py-12 bg-white">
             <div className="container mx-auto px-4">
                 <h2 className="text-3xl font-bold text-center mb-8">Our Gallery</h2>
                 <div className="flex flex-wrap gap-4 mb-4">

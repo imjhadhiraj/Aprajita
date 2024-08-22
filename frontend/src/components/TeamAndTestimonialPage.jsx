@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Facebook, Twitter, Linkedin, Instagram } from 'lucide-react';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const TeamMember = ({ member }) => {
     return (
@@ -68,18 +69,33 @@ const TeamSection = () => {
     );
 };
 
-const NewsletterSection = () => (
-    <section className="py-12 bg-orange-500 text-white">
-        <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-4">Sign Up for Updates</h2>
-            <p className="text-center mb-8">To be updated with all the latest news, offers and special announcements.</p>
-            <form className="flex justify-center">
-                <input type="email" placeholder="Your email address" className="px-4 py-2 rounded-l-lg w-64" />
-                <button type="submit" className="bg-gray-800 text-white px-6 py-2 rounded-r-lg">Subscribe</button>
-            </form>
-        </div>
-    </section>
-);
+const NewsletterSection = () => {
+    const [subscribedEmail, setSubscribedEmail] = useState('');
+
+    const handleForm = (e) => {
+        e.preventDefault();
+        toast.success('Subscribed successfully');
+        setSubscribedEmail('');
+    };
+    return (
+        <section className="py-12 bg-orange-500 text-white">
+            <div className="container mx-auto px-4">
+                <h2 className="text-3xl font-bold text-center mb-4">Sign Up for Updates</h2>
+                <p className="text-center mb-8">To be updated with all the latest news, offers and special announcements.</p>
+                <form className="flex justify-center" onSubmit={handleForm}>
+                    <input
+                        type="email"
+                        required
+                        value={subscribedEmail}
+                        onChange={(e) => setSubscribedEmail(e.target.value)}
+                        placeholder="Your email address"
+                        className="px-4 py-2 rounded-l-lg w-64 text-black" />
+                    <button type="submit" className="bg-gray-800 text-white px-6 py-2 rounded-r-lg">Subscribe</button>
+                </form>
+            </div>
+        </section>
+    )
+};
 
 const TeamAndTestimonialPage = () => {
     return (
