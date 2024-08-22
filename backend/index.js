@@ -4,7 +4,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
 import { loginAdmin, logout, profile, registerAdmin, updateProfile } from './controllers/User.controller.js';
-import { createPayment, getPaymentById, storeVerifiedPayment } from './controllers/payment.controller.js';
+import { createPayment, getAllPayments, getPaymentById, storeVerifiedPayment } from './controllers/payment.controller.js';
 import { authAdmin } from './middlewares/authAdmin.middleware.js';
 import { addEvent, addTeamMember, deleteEvent, deleteGalleryImage, deleteTeamMember, deleteUnusedImage, getAllEvents, getAllGalleryImages, getAllTeamMembers, getGalleryImages, uploadGalleryImage } from './controllers/services.controller.js';
 import rateLimit from 'express-rate-limit';
@@ -88,6 +88,7 @@ router.route('/get-team-members').get(getAllTeamMembers);
 router.route('/create-payment').post(createPayment)
 router.route('/verify-payment').post(storeVerifiedPayment);
 router.route('/get-payment-data/:id').get(getPaymentById);
+router.route('/get-all-payment-data').get(authAdmin, getAllPayments);
 
 app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`);

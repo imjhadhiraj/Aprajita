@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import useAdmin from '../../store/useAdmin'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import { Image, Calendar, Users, UserPlus, LogOut, Menu, X } from 'lucide-react'
+import { Image, Calendar, Users, UserPlus, LogOut, Menu, X, CreditCard } from 'lucide-react'
 import toast, { Toaster } from 'react-hot-toast'
 
 const DashboardLayout = () => {
@@ -45,6 +45,7 @@ const DashboardLayout = () => {
         { to: "/admin-dashboard/events", icon: Calendar, label: "Events" },
         { to: "/admin-dashboard/team", icon: Users, label: "Team Members" },
         { to: "/admin-dashboard/register-admin", icon: UserPlus, label: "Register new Admin" },
+        { to: "/admin-dashboard/get-all-paymentDetails", icon: CreditCard, label: "Payments" },
     ]
 
     return (
