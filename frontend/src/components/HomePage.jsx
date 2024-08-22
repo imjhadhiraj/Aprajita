@@ -11,7 +11,7 @@ const Homepage = () => {
     return (
         <div className="font-sans">
             {/* Top bar */}
-            <div className="bg-orange-500 text-white p-2 flex justify-between items-center">
+            {/* <div className="bg-orange-500 text-white p-2 flex justify-between items-center">
                 <div className="flex space-x-2">
                     <a href="https://www.facebook.com/theaprajita16?mibextid=ZbWKwL" target='_blank' rel="noopener noreferrer">
                         <Facebook className='cursor-pointer' size={20} />
@@ -31,10 +31,10 @@ const Homepage = () => {
                     <button className="text-sm">FAQ's</button>
                     <button className="text-sm">Help</button>
                 </div>
-            </div>
+            </div> */}
 
             {/* Header */}
-            <header className="bg-white p-4 flex justify-between items-center">
+            <header className="bg-white p-2 flex justify-between items-center">
                 <div className="flex items-center space-x-2">
                     <div className="w-12 h-12 bg-orange-500 rounded-full">
                         <img src="logo.jpg" alt="logo" className="w-full h-full object-cover rounded-full" />
@@ -57,20 +57,20 @@ const Homepage = () => {
             </header>
 
             {/* Navigation */}
-            <nav className={`bg-gray-800 text-white p-4 ${isMenuOpen ? 'block' : 'hidden'} md:block`}>
-                <ul className="flex flex-col md:flex-row justify-between items-center">
-                    <li className="py-2 md:py-0">HOME</li>
-                    <li className="py-2 md:py-0">ABOUT US</li>
-                    <li className="py-2 md:py-0">GALLERY</li>
-                    <li className="py-2 md:py-0">CAMPAIGNS</li>
-                    <li className="py-2 md:py-0">EVENTS</li>
-                    <li className="py-2 md:py-0">FAQ'S</li>
-                    <li className="py-2 md:py-0">BLOG</li>
-                    <li className="py-2 md:py-0">CONTACT US</li>
-                    <li className="py-2 md:py-0">
-                        <button className="bg-orange-500 px-4 py-2 rounded">DONATE NOW</button>
-                    </li>
-                </ul>
+            <nav className={`bg-gray-800 text-white p-2 ${isMenuOpen ? 'block' : 'hidden'} md:block`}>
+                <div className="flex flex-col md:flex-row justify-between items-center md:px-4">
+                    <span className="py-2 md:py-1 cursor-pointer">HOME</span>
+                    <a href='#' className="py-2 md:py-1 cursor-pointer">ABOUT US</a>
+                    <a href='#gallery' className="py-2 md:py-1 cursor-pointer">GALLERY</a>
+                    <a href='#campaign' className="py-2 md:py-1 cursor-pointer">CAMPAIGNS</a>
+                    <a href='#events' className="py-2 md:py-1 cursor-pointer">EVENTS</a>
+                    {/* <a href='#' className="py-2 md:py-1 cursor-pointer">FAQ'S</a> */}
+                    {/* <a href='#' className="py-2 md:py-1 cursor-pointer">BLOG</a> */}
+                    <a href='#contact' className="py-2 md:py-1 cursor-pointer">CONTACT US</a>
+                    <a href='#donate' className="py-2 md:py-1 cursor-pointer">
+                        <button className="bg-orange-500 px-4 py-1 rounded">DONATE NOW</button>
+                    </a>
+                </div>
             </nav>
 
             {/* Hero Section */}

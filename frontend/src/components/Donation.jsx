@@ -41,6 +41,11 @@ const Donation = () => {
                 amount: paymentDetails.amount
             });
 
+            if (orderResponse.status !== 200) {
+                toast.error('Something went wrong');
+                return;
+            }
+
             const order = orderResponse.data.order;
             const options = {
                 key: key,
@@ -58,6 +63,7 @@ const Donation = () => {
                         amount: paymentDetails.amount,
                         date: new Date(),
                         phone: paymentDetails.phone,
+                        // bankRrn: response.bank_rrn_number,
                         razorpay_order_id: response.razorpay_order_id,
                         razorpay_payment_id: response.razorpay_payment_id,
                         razorpay_signature: response.razorpay_signature
@@ -87,13 +93,14 @@ const Donation = () => {
             const rzp1 = new window.Razorpay(options);
             rzp1.open();
         } catch (error) {
+            toast.error(error?.response?.data?.err?.error?.description || 'Something went wrong');
             console.error('Error in checkoutHandler:', error);
         }
     };
 
     return (
         <>
-            <div className="flex p-8 bg-gray-100 flex-col-reverse md:flex-row flex-wrap md:flex-nowrap gap-3">
+            <div id="donate" className="flex p-8 bg-gray-100 flex-col-reverse md:flex-row flex-wrap md:flex-nowrap gap-3">
                 <div className="w-full md:w-1/2 pr-4">
                     <h2 className="text-2xl font-bold mb-4">Make your donation</h2>
                     <form className="bg-white p-4 rounded-lg shadow-md" onSubmit={(e) => checkoutHandler(e)}>
