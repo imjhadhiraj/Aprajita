@@ -148,6 +148,48 @@ export const addEvent = async (req, res) => {
     }
 }
 
+export const updateEvent = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { title, description, date, location } = req.body;
+        if (!title || !description || !date || !location) {
+            return res.status(400).json({ error: 'All fields are required' });
+        }
+
+        const oldEvent = await Event.findById(id);
+        if (!oldEvent) {
+            return res.status(400).json({ error: 'Event not found' });
+        }
+
+        let oldImage = oldEvent.image;
+
+        let image = oldImage;
+        if (req.body.image) {
+            image = req.body.image;
+        }
+
+        const parsedDate = new Date(date);
+
+        const event = await Event.findByIdAndUpdate(id, {
+            title,
+            description,
+            date: parsedDate,
+            location,
+            image
+        }, { new: true });
+        if (!event) {
+            return res.status(400).json({ error: 'Failed to update event' });
+        }
+        if (oldImage !== image)
+            await deleteFromCloudinary(oldImage);
+
+        return res.status(200).json({ message: 'Event Updated Successfully' });
+    } catch (error) {
+        console.log('Error in update-event route: ', error);
+        return res.status(400).json(error?.message);
+    }
+}
+
 export const deleteEvent = async (req, res) => {
     try {
         const { id } = req.params;
@@ -220,6 +262,47 @@ export const deleteTeamMember = async (req, res) => {
         return res.status(200).json({ message: 'Team Member deleted successfully' });
     }
     catch (error) {
+        return res.status(400).json(error?.message);
+    }
+}
+
+export const updateTeamMember = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, position, socials, quote, description } = req.body;
+        if (!name || !position || !quote || !description) {
+            return res.status(400).json({ error: 'All fields are required' });
+        }
+        const socialJson = JSON.parse(socials);
+        const teamMemberData = await Member.findById(id);
+        if (!teamMemberData) {
+            return res.status(400).json({ error: 'Team Member not found' });
+        }
+        const oldImage = teamMemberData.image;
+
+        let image = oldImage;
+        if (req.body.image) {
+            image = req.body.image;
+        }
+
+        const teamMember = await Member.findByIdAndUpdate(id, {
+            name,
+            position,
+            quote,
+            description,
+            socials: socialJson,
+            image
+        }, { new: true });
+        if (!teamMember) {
+            return res.status(400).json({ error: 'Failed to update team member' });
+        }
+
+        if (oldImage !== image)
+            await deleteFromCloudinary(oldImage);
+
+        return res.status(200).json({ message: 'Team Member Updated Successfully' });
+    } catch (error) {
+        console.log('Error in update-team-member route: ', error);
         return res.status(400).json(error?.message);
     }
 }

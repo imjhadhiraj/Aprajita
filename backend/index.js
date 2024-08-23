@@ -6,7 +6,7 @@ import mongoose from 'mongoose';
 import { loginAdmin, logout, profile, registerAdmin, updateProfile } from './controllers/User.controller.js';
 import { createPayment, getAllPayments, getPaymentById, storeVerifiedPayment } from './controllers/payment.controller.js';
 import { authAdmin } from './middlewares/authAdmin.middleware.js';
-import { addEvent, addTeamMember, deleteEvent, deleteGalleryImage, deleteTeamMember, deleteUnusedImage, getAllEvents, getAllGalleryImages, getAllTeamMembers, getGalleryImages, uploadGalleryImage } from './controllers/services.controller.js';
+import { addEvent, addTeamMember, deleteEvent, deleteGalleryImage, deleteTeamMember, deleteUnusedImage, getAllEvents, getAllGalleryImages, getAllTeamMembers, getGalleryImages, updateEvent, updateTeamMember, uploadGalleryImage } from './controllers/services.controller.js';
 import rateLimit from 'express-rate-limit';
 
 dotenv.config();
@@ -58,29 +58,20 @@ router.route('/logout').post(logout);
 router.route('/delete-cloudinary-image').delete(authAdmin, deleteUnusedImage);
 
 // # Gallery routes 
-router.route('/upload-gallery-image').post(
-    authAdmin,
-    uploadGalleryImage);
-
+router.route('/upload-gallery-image').post(authAdmin, uploadGalleryImage);
 router.route('/delete-gallery-image/:id').delete(authAdmin, deleteGalleryImage);
 router.route('/get-gallery-images').get(getGalleryImages);
 router.route('/get-all-gallery-images').get(getAllGalleryImages);
 
 // # Events routes
-router.route('/add-event').post(
-    authAdmin,
-    addEvent);
-
+router.route('/add-event').post(authAdmin, addEvent);
+router.route('/update-event/:id').put(authAdmin, updateEvent);
 router.route('/delete-event/:id').delete(authAdmin, deleteEvent);
 router.route('/get-events').get(getAllEvents);
 
-
 // # Team Member routes
-router.route('/add-team-member').post(
-    authAdmin,
-    // upload.single('profileImg'),
-    addTeamMember);
-
+router.route('/add-team-member').post(authAdmin, addTeamMember);
+router.route('/update-team-member/:id').put(authAdmin, updateTeamMember);
 router.route('/delete-team-member/:id').delete(authAdmin, deleteTeamMember);
 router.route('/get-team-members').get(getAllTeamMembers);
 
