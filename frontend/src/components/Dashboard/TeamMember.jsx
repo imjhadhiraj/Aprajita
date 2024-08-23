@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import uploadToCloud from '../../utils/uploadToCloud';
-import { Facebook, Instagram, Linkedin, Twitter } from 'lucide-react';
+import { Edit2Icon, Facebook, Instagram, Linkedin, Trash2Icon, Twitter } from 'lucide-react';
 
 const TeamMember = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -21,6 +21,10 @@ const TeamMember = () => {
             linkedin: '',
         },
     });
+
+    const [editId, setEditId] = useState(null);
+    const [editMode, setEditMode] = useState(false);
+    const [imageSrc, setImageSrc] = useState(null);
 
     useEffect(() => {
         fetchMembers();
@@ -43,6 +47,58 @@ const TeamMember = () => {
         setIsLoading(true);
 
         try {
+            if (editMode) {
+                try {
+                    let imageUrl = formData.profileImg;
+                    if (formData.profileImg instanceof File) {
+                        imageUrl = await uploadToCloud(formData.profileImg);
+                        if (!imageUrl) {
+                            throw new Error('Failed to upload image');
+                        }
+                    }
+
+                    const memberData = {
+                        name: formData.name,
+                        position: formData.position,
+                        quote: formData.quote,
+                        description: formData.description,
+                        image: imageUrl,
+                        socials: JSON.stringify(formData.socials),
+                    };
+
+                    const response = await axios.put(`${import.meta.env.VITE_BACKEND_BASE_URL}/update-team-member/${editId}`, memberData, {
+                        withCredentials: true,
+                    });
+
+                    if (response.status === 200) {
+                        toast.success(response.data.message);
+                        setIsModalOpen(false);
+                        await fetchMembers();
+                    }
+                } catch (error) {
+                    toast.error(error.response?.data?.error || 'An error occurred while updating the member.');
+                }
+                finally {
+                    setIsLoading(false);
+                    setFormData({
+                        name: '',
+                        position: '',
+                        profileImg: null,
+                        quote: '',
+                        description: '',
+                        socials: {
+                            twitter: '',
+                            facebook: '',
+                            instagram: '',
+                            linkedin: '',
+                        },
+                    })
+                    setEditMode(false);
+                }
+                return;
+            }
+
+
             const imageUrl = await uploadToCloud(formData.profileImg);
 
             if (!imageUrl) {
@@ -83,8 +139,58 @@ const TeamMember = () => {
             });
         } finally {
             setIsLoading(false);
+            setFormData({
+                name: '',
+                position: '',
+                profileImg: null,
+                quote: '',
+                description: '',
+                socials: {
+                    twitter: '',
+                    facebook: '',
+                    instagram: '',
+                    linkedin: '',
+                },
+            });
+
         }
     };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setEditMode(false);
+        setFormData({
+            name: '',
+            position: '',
+            profileImg: null,
+            quote: '',
+            description: '',
+            socials: {
+                twitter: '',
+                facebook: '',
+                instagram: '',
+                linkedin: '',
+            },
+        });
+    };
+
+    const handleUpdateMember = (id) => {
+        setEditId(id);
+        const member = members.find((member) => member._id === id);
+        // console.log(typeof (member.socials)) // object
+        setImageSrc(member.image);
+        setFormData({
+            name: member.name,
+            position: member.position,
+            profileImg: member.image,
+            quote: member.quote,
+            description: member.description,
+            socials: member.socials,
+        });
+
+        setIsModalOpen(true);
+        setEditMode(true);
+    }
 
     const handleDeleteMember = async (id) => {
         setIsLoading(true);
@@ -146,12 +252,23 @@ const TeamMember = () => {
                                             </a>
                                         )}
                                     </div>
-                                    <button
-                                        onClick={() => handleDeleteMember(member._id)}
-                                        className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out"
-                                    >
-                                        Delete
-                                    </button>
+                                    <div className="flex flex-wrap gap-2">
+                                        <button
+                                            className='bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out flex gap-2'
+                                            onClick={() => handleUpdateMember(member._id)}
+                                        >
+                                            <Edit2Icon className="w-6 h-6" />
+                                            Edit
+                                        </button>
+                                        <button
+                                            onClick={() => handleDeleteMember(member._id)}
+                                            className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out flex gap-2"
+                                        >
+                                            <Trash2Icon className="w-6 h-6" />
+                                            Delete
+                                        </button>
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -162,14 +279,14 @@ const TeamMember = () => {
             {isModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-8">
-                        <h2 className="text-3xl font-bold mb-6 text-gray-800">Add New Member</h2>
+                        <h2 className="text-3xl font-bold mb-6 text-gray-800">{editMode ? "Edit" : "Add new"} Member</h2>
                         <form onSubmit={handleSubmit} className='max-h-[70vh] overflow-y-auto gallery-scroll-area scrollbar-thin h-screen'>
                             <input
                                 type="text"
                                 value={formData.name}
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                 placeholder="Name"
-                                className="w-[90%] h-12 border border-gray-300 rounded-lg px-4 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-[90%] ml-2 mt-2 h-12 border border-gray-300 rounded-lg px-4 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 required
                             />
                             <input
@@ -177,29 +294,37 @@ const TeamMember = () => {
                                 value={formData.position}
                                 onChange={(e) => setFormData({ ...formData, position: e.target.value })}
                                 placeholder="Position"
-                                className="w-[90%] h-12 border border-gray-300 rounded-lg px-4 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-[90%] h-12 border border-gray-300 ml-2 rounded-lg px-4 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 required
                             />
-                            <input
+                            {editMode ? (<div className='flex'>
+                                <img src={imageSrc} alt={formData.name} className="w-12 h-12 object-cover rounded-lg ml-2 mb-4" />
+                                <input
+                                    type="file"
+                                    onChange={(e) => setFormData({ ...formData, profileImg: e.target.files[0] })}
+                                    accept="image/*"
+                                    className="w-[90%] mb-4 ml-2"
+                                />
+                            </div>) : (<input
                                 type="file"
                                 onChange={(e) => setFormData({ ...formData, profileImg: e.target.files[0] })}
                                 accept="image/*"
-                                className="w-[90%] mb-4"
+                                className="w-[90%] mb-4 ml-2"
                                 required
-                            />
+                            />)}
                             <input
                                 type="text"
                                 value={formData.quote}
                                 onChange={(e) => setFormData({ ...formData, quote: e.target.value })}
                                 placeholder="Quote"
-                                className="w-[90%] h-12 border border-gray-300 rounded-lg px-4 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-[90%] h-12 border border-gray-300 ml-2 rounded-lg px-4 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 required
                             />
                             <textarea
                                 value={formData.description}
                                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                 placeholder="Description"
-                                className="w-[90%] h-32 border border-gray-300 rounded-lg px-4 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-[90%] h-32 ml-2 border border-gray-300 rounded-lg px-4 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 required
                             />
                             {['twitter', 'facebook', 'instagram', 'linkedin'].map((social) => (
@@ -212,23 +337,34 @@ const TeamMember = () => {
                                         socials: { ...formData.socials, [social]: e.target.value }
                                     })}
                                     placeholder={`${social.charAt(0).toUpperCase() + social.slice(1)} URL`}
-                                    className="w-[90%] h-12 border border-gray-300 rounded-lg px-4 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-[90%] h-12 border border-gray-300 ml-2 rounded-lg px-4 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
                             ))}
-                            <div className="flex justify-end space-x-4">
+                            <div className="flex justify-end space-x-4 mr-3">
                                 <button
                                     type="button"
-                                    onClick={() => setIsModalOpen(false)}
+                                    onClick={closeModal}
                                     className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out"
                                 >
                                     Cancel
                                 </button>
-                                <button
-                                    type="submit"
-                                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out"
-                                >
-                                    Add Member
-                                </button>
+                                {
+                                    editMode ? (
+                                        <button
+                                            type="submit"
+                                            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out"
+                                        >
+                                            Update Member
+                                        </button>
+                                    ) : (
+                                        <button
+                                            type="submit"
+                                            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out"
+                                        >
+                                            Add Member
+                                        </button>
+                                    )
+                                }
                             </div>
                         </form>
                     </div>

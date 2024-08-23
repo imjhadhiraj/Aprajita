@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import uploadToCloud from '../../utils/uploadToCloud';
-import { Calendar, MapPin, Plus, Trash } from 'lucide-react';
+import { Calendar, Edit, MapPin, Plus, Trash } from 'lucide-react';
 
 const Events = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -13,6 +13,10 @@ const Events = () => {
     const [location, setLocation] = useState('');
     const [photo, setPhoto] = useState(null);
     const [events, setEvents] = useState([]);
+
+    const [isEditing, setIsEditing] = useState(false);
+    const [editEventId, setEditEventId] = useState('');
+    const [editImgSrc, setEditImgSrc] = useState('');
 
     useEffect(() => {
         fetchEvents();
@@ -37,12 +41,56 @@ const Events = () => {
         setDate('');
         setLocation('');
         setPhoto(null);
+        setIsEditing(false);
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         setIsLoading(true);
         try {
+            if (isEditing) {
+                try {
+                    let imageUrl = editImgSrc;
+                    if (photo) {
+                        imageUrl = await uploadToCloud(photo);
+                        if (!imageUrl) {
+                            throw new Error('Failed to upload image');
+                        }
+
+                    }
+                    const eventData = {
+                        title,
+                        description,
+                        date,
+                        location,
+                        image: imageUrl // Use the Cloudinary URL
+                    };
+                    const response = await axios.put(`${import.meta.env.VITE_BACKEND_BASE_URL}/update-event/${editEventId}`, eventData, {
+                        withCredentials: true,
+                    });
+
+                    if (response.status === 200) {
+                        toast.success(response.data.message);
+                        await fetchEvents();
+                    } else {
+                        toast.error('Failed to update event.');
+                    }
+
+                } catch (error) {
+                    toast.error(error.response?.data?.error || 'An error occurred while updating the event.');
+                }
+                finally {
+                    setIsLoading(false);
+                    setIsEditing(false);
+                    setIsModalOpen(false);
+                    setTitle('');
+                    setDescription('');
+                    setDate('');
+                    setLocation('');
+                    setPhoto(null);
+                }
+                return;
+            }
             const imageUrl = await uploadToCloud(photo);
 
             if (!imageUrl) {
@@ -79,6 +127,20 @@ const Events = () => {
             setPhoto(null);
         }
     };
+
+    const handleEditEvent = (id) => {
+        setIsEditing(true);
+        setEditEventId(id);
+        const event = events.find((event) => event._id === id);
+        setTitle(event.title);
+        setDescription(event.description);
+        const date = new Date(event.date);
+        const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        setDate(formattedDate);
+        setLocation(event.location);
+        setIsModalOpen(true);
+        setEditImgSrc(event.image);
+    }
 
     const handleDeleteEvent = async (id) => {
         setIsLoading(true);
@@ -129,13 +191,20 @@ const Events = () => {
                                         <MapPin className="h-5 w-5 mr-2" />
                                         <span>{event.location}</span>
                                     </div>
-                                    <button
-                                        onClick={() => handleDeleteEvent(event._id)}
-                                        className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg flex items-center transition duration-300 ease-in-out"
-                                    >
-                                        <Trash className="h-5 w-5 mr-2" />
-                                        Delete
-                                    </button>
+                                    <div className="flex flex-wrap gap-2">
+                                        <button
+                                            className="bg-black flex hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg mr-2 transition duration-300 ease-in-out"
+                                            onClick={() => handleEditEvent(event._id)}
+                                        >
+                                            <Edit className="h-5 w-5 mr-2" />
+                                            Edit</button>
+                                        <button
+                                            onClick={() => handleDeleteEvent(event._id)}
+                                            className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg flex items-center transition duration-300 ease-in-out"
+                                        >
+                                            <Trash className="h-5 w-5 mr-2" />
+                                            Delete
+                                        </button></div>
                                 </div>
                             </div>
                         ))}
@@ -145,7 +214,7 @@ const Events = () => {
                 {isModalOpen && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                         <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
-                            <h2 className="text-3xl font-bold mb-6 text-gray-800">Add New Event</h2>
+                            <h2 className="text-3xl font-bold mb-6 text-gray-800">{isEditing ? "Edit" : "Add New"} Event</h2>
                             <form onSubmit={handleSubmit}>
                                 <input
                                     type="text"
@@ -177,12 +246,22 @@ const Events = () => {
                                     className="w-full mb-4 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     required
                                 />
-                                <input
-                                    type="file"
-                                    onChange={(e) => setPhoto(e.target.files[0])}
-                                    className="w-full mb-6"
-                                    required
-                                />
+                                {
+                                    !isEditing ? (
+                                        <input
+                                            type="file"
+                                            onChange={(e) => setPhoto(e.target.files[0])}
+                                            className="w-full mb-6"
+                                            required
+                                        />) : (<div className='flex gap-2'>
+                                            <img className='h-12 w-12 rounded-full' src={editImgSrc} alt="eventImg" />
+                                            <input
+                                                type="file"
+                                                onChange={(e) => setPhoto(e.target.files[0])}
+                                                className="w-full mb-6"
+                                            />
+                                        </div>)
+                                }
                                 <div className="flex justify-end space-x-4">
                                     <button
                                         type="button"
@@ -191,12 +270,17 @@ const Events = () => {
                                     >
                                         Cancel
                                     </button>
-                                    <button
+                                    {isEditing ? (<button
+                                        type="submit"
+                                        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out"
+                                    >
+                                        Edit Event
+                                    </button>) : (<button
                                         type="submit"
                                         className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out"
                                     >
                                         Add Event
-                                    </button>
+                                    </button>)}
                                 </div>
                             </form>
                         </div>

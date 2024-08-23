@@ -132,7 +132,7 @@ const Admin = () => {
                     <ReCAPTCHA
                         sitekey={`${import.meta.env.VITE_CAPTCHA_SITE_KEY}`}
                         onChange={onChange}
-                    />,
+                    />
 
                     <div>
                         <button

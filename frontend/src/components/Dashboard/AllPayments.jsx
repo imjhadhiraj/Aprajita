@@ -41,7 +41,7 @@ const AllPayments = () => {
 
     return (
         <div>
-            <h3 className="text-2xl font-semibold text-gray-800">All Payments</h3>
+            <h3 className="text-2xl font-semibold text-gray-800 m-4">All Payments</h3>
             <div className="mt-4 overflow-x-auto">
                 <table className="min-w-full bg-white">
                     <thead>
@@ -78,7 +78,7 @@ const AllPayments = () => {
 
                 {paymentModalOpen && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                        <div className="bg-white p-8 rounded-lg w-1/2">
+                        <div className="bg-white p-8 rounded-lg w-[90%] md:w-1/2">
                             <div className="flex justify-between">
                                 <h3 className="text-2xl font-semibold text-gray-800">Payment Details</h3>
                                 <button onClick={() => setPaymentModalOpen(false)} className="top-4 right-4 text-gray-500">
@@ -86,7 +86,7 @@ const AllPayments = () => {
                                 </button>
                             </div>
                             <div className="mt-4 overflow-x-auto">
-                                <p><strong>ID: </strong> {paymentIdData._id}</p>
+                                {/* <p><strong>ID: </strong> {paymentIdData._id}</p> */}
                                 <p><strong>Name: </strong> {paymentIdData.name}</p>
                                 <p><strong>Email: </strong> {paymentIdData.email}</p>
                                 <p><strong>Amount: </strong> {paymentIdData.amount}</p>
