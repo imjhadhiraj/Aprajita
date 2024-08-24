@@ -1,12 +1,12 @@
 import GoogleUser from '../models/GoogleUser.model.js';
 import jwt from 'jsonwebtoken';
-
-// import admin from 'firebase-admin';
-// import serviceAccount from '../aprajita-firebase-adminsdk.json' assert { type: 'json' };
-// admin.initializeApp({
-//     credential: admin.credential.cert(serviceAccount),
-// });
-
+/*
+import admin from 'firebase-admin';
+import serviceAccount from '../aprajita-firebase-adminsdk.json' assert { type: 'json' };
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+});
+*/
 export const googleUserLogin = async (req, res) => {
     try {
         // console.log(req.body);

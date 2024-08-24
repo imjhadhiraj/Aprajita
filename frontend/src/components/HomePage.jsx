@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Facebook, Twitter, Linkedin, Instagram, Mail, Phone, Menu, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Homepage = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -60,7 +61,7 @@ const Homepage = () => {
             <nav className={`bg-gray-800 text-white p-2 ${isMenuOpen ? 'block' : 'hidden'} md:block`}>
                 <div className="flex flex-col md:flex-row justify-between items-center md:px-4">
                     <span className="py-2 md:py-1 cursor-pointer">HOME</span>
-                    <a href='#' className="py-2 md:py-1 cursor-pointer">ABOUT US</a>
+                    <Link to='ReadMore' className="py-2 md:py-1 cursor-pointer">ABOUT US</Link>
                     <a href='#gallery' className="py-2 md:py-1 cursor-pointer">GALLERY</a>
                     <a href='#campaign' className="py-2 md:py-1 cursor-pointer">CAMPAIGNS</a>
                     <a href='#events' className="py-2 md:py-1 cursor-pointer">EVENTS</a>
@@ -86,8 +87,8 @@ const Homepage = () => {
                         Aprajita Foundation empowers women and keeps our cultural traditions alive, making a difference in everyday lives.
                     </p>
                     <div className="flex space-x-4">
-                        <button className="bg-orange-500 text-white px-6 py-2 rounded">DONATE NOW</button>
-                        <button className="bg-white text-gray-800 px-6 py-2 rounded">READ MORE</button>
+                        <a href='#donate' className="bg-orange-500 text-white px-6 py-2 rounded">DONATE NOW</a>
+                        <Link to='ReadMore' className="bg-white text-gray-800 px-6 py-2 rounded">READ MORE</Link>
                     </div>
                 </div>
             </div>

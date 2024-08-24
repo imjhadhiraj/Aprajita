@@ -16,12 +16,17 @@ import TeamMember from './components/Dashboard/TeamMember.jsx';
 import RegisterAdmin from './components/Dashboard/RegisterAdmin.jsx';
 import PaymentSuccessPage from './components/PaymentSuccessPage.jsx';
 import AllPayments from './components/Dashboard/AllPayments.jsx';
+import ReadMore from './components/ReadMore.jsx';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
     errorElement: <NotFoundPage />,
+  },
+  {
+    path: "/ReadMore",
+    element: <ReadMore />
   },
   {
     path: "/admin",
