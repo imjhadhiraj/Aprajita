@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Donation = () => {
     const [paymentDetails, setPaymentDetails] = useState({
@@ -152,7 +152,7 @@ const Donation = () => {
                     <p className="text-sm mb-4">
                         As an NGO, we independently organize all our events and rely solely on our own resources. Your donations are crucial for us to continue our work and make a meaningful impact.
                     </p>
-                    <button className="bg-orange-500 text-white px-4 py-2 rounded">Read More</button>
+                    <Link to='ReadMore' className="bg-orange-500 text-white px-4 py-2 rounded">Read More</Link>
                 </div>
             </div>
         </>

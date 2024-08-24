@@ -2,6 +2,8 @@ import axios from 'axios';
 import { Calendar, ArrowRight, MapPin } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Donation from './Donation';
+import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const campaignContent = [
     {
@@ -20,6 +22,21 @@ const campaignContent = [
 
 const CampaignPage = () => {
     const [latestEvents, setLatestEvents] = useState([]);
+    const [modalOpen, setModalOpen] = useState(false);
+
+    const openModal = () => {
+        setModalOpen(true);
+    }
+
+    const closeModal = () => {
+        setModalOpen(false);
+    }
+
+    const handleVolunteer = (e) => {
+        e.preventDefault();
+        toast.success('Thank you for volunteering! We will get in touch with you soon.');
+        closeModal();
+    }
 
     const fetchLatestEvents = async () => {
         try {
@@ -44,7 +61,7 @@ const CampaignPage = () => {
                         </div>
                         <h3 className="font-bold text-xl mb-2">{item.title}</h3>
                         <p className="text-sm mb-4">{item.description}</p>
-                        <button className="bg-orange-500 text-white px-4 py-2 rounded">Read More</button>
+                        <Link to='ReadMore' className="bg-orange-500 text-white px-4 py-2 rounded">Read More</Link>
                     </div>
                 ))}
             </div>
@@ -82,9 +99,27 @@ const CampaignPage = () => {
                 <img src="volunteer.jpeg" alt="Volunteers" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center text-white">
                     <h2 className="text-3xl font-bold mb-4">Anyone Can Be A Volunteer, Also You</h2>
-                    <button className="bg-orange-500 text-white px-6 py-2 rounded">BECOME A VOLUNTEER</button>
+                    <button onClick={openModal} className="bg-orange-500 text-white px-6 py-2 rounded">BECOME A VOLUNTEER</button>
                 </div>
             </div>
+            {modalOpen && <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+
+                <div className="bg-white p-8 rounded-lg">
+                    <h2 className="text-2xl font-bold mb-4">Become a Volunteer</h2>
+                    <form className="flex flex-col gap-4" onSubmit={handleVolunteer}>
+                        <input type="text" required placeholder="Full Name" className="border p-2 rounded" />
+                        <input type="email" required placeholder="Email" className="border p-2 rounded" />
+                        <input type="tel" required placeholder="Phone" className="border p-2 rounded" />
+                        <div className='flex justify-between'>
+                            <button onClick={closeModal} className="bg-black text-white px-4 py-2 rounded">Cancel</button>
+                            <button type="submit" className="bg-orange-500 text-white px-4 py-2 rounded">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+            }
         </div>
     );
 };

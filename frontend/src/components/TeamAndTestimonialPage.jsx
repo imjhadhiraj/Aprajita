@@ -3,9 +3,9 @@ import { Facebook, Twitter, Linkedin, Instagram } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-const TeamMember = ({ member }) => {
+const TeamMember = ({ member, onMemberClick }) => {
     return (
-        <div key={member._id} className="bg-white shadow-xl rounded-lg overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105">
+        <div onClick={() => onMemberClick(member)} className="bg-white shadow-xl rounded-lg overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105">
             <img className="w-full h-64 object-contain" src={member.image} alt={member.name} />
             <div className="p-6">
                 <h2 className="text-2xl font-bold text-gray-800 mb-2">{member.name}</h2>
@@ -41,6 +41,8 @@ const TeamMember = ({ member }) => {
 
 const TeamSection = () => {
     const [teamMembers, setTeamMembers] = useState([]);
+    const [teamData, setTeamData] = useState(null);
+    const [teamMemberModal, setTeamMemberModal] = useState(false);
 
     const fetchTeam = async () => {
         try {
@@ -48,7 +50,13 @@ const TeamSection = () => {
             setTeamMembers(response.data);
         } catch (error) {
             console.error(error);
+            toast.error('Failed to fetch team members');
         }
+    }
+
+    const fetchSpecificTeamMember = (member) => {
+        setTeamData(member);
+        setTeamMemberModal(true);
     }
 
     useEffect(() => {
@@ -60,10 +68,73 @@ const TeamSection = () => {
             <div className="container mx-auto px-4">
                 <h2 className="text-3xl font-bold text-center mb-8">Our Team</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {teamMembers.map((member, index) => (
-                        <TeamMember key={index} member={member} />
+                    {teamMembers.map((member) => (
+                        <TeamMember
+                            key={member._id}
+                            member={member}
+                            onMemberClick={fetchSpecificTeamMember}
+                        />
                     ))}
                 </div>
+                {teamMemberModal && teamData && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                        <div className="bg-white rounded-lg max-w-4xl w-full overflow-hidden shadow-2xl">
+                            <div className="relative">
+                                <div className="absolute top-0 left-0 w-full h-40 bg-gradient-to-r from-blue-500 to-teal-500"></div>
+                                <div className="relative pt-20 px-8 pb-8">
+                                    <img
+                                        src={teamData.image}
+                                        alt={teamData.name}
+                                        className="w-40 h-40 object-cover rounded-full border-4 border-white shadow-lg mx-auto"
+                                    />
+                                    <h2 className="text-3xl font-bold text-center mt-4 text-gray-800">{teamData.name}</h2>
+                                    <p className="text-center text-lg text-blue-600 font-semibold mb-4">{teamData.position}</p>
+
+                                    {teamData.quote && (
+                                        <blockquote className="italic text-center text-gray-600 my-4">
+                                            "{teamData.quote}"
+                                        </blockquote>
+                                    )}
+
+                                    <div className="bg-gray-100 p-6 rounded-lg mt-6">
+                                        <h3 className="text-xl font-semibold mb-2 text-gray-700">About {teamData.name}</h3>
+                                        <p className="text-gray-600">{teamData.description}</p>
+                                    </div>
+
+                                    <div className="flex justify-center space-x-4 mt-6">
+                                        {teamData.socials?.twitter && (
+                                            <a href={teamData.socials.twitter} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-600 transition-colors">
+                                                <Twitter size={24} />
+                                            </a>
+                                        )}
+                                        {teamData.socials?.linkedin && (
+                                            <a href={teamData.socials.linkedin} target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:text-blue-900 transition-colors">
+                                                <Linkedin size={24} />
+                                            </a>
+                                        )}
+                                        {teamData.socials?.facebook && (
+                                            <a href={teamData.socials.facebook} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 transition-colors">
+                                                <Facebook size={24} />
+                                            </a>
+                                        )}
+                                        {teamData.socials?.instagram && (
+                                            <a href={teamData.socials.instagram} target="_blank" rel="noopener noreferrer" className="text-pink-600 hover:text-pink-800 transition-colors">
+                                                <Instagram size={24} />
+                                            </a>
+                                        )}
+                                    </div>
+
+                                    <button
+                                        onClick={() => setTeamMemberModal(false)}
+                                        className="mt-8 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300 mx-auto block"
+                                    >
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </section>
     );
