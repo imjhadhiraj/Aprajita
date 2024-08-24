@@ -8,6 +8,7 @@ import { createPayment, getAllPayments, getPaymentById, storeVerifiedPayment } f
 import { authAdmin } from './middlewares/authAdmin.middleware.js';
 import { addEvent, addTeamMember, deleteEvent, deleteGalleryImage, deleteTeamMember, deleteUnusedImage, getAllEvents, getAllGalleryImages, getAllTeamMembers, getGalleryImages, updateEvent, updateTeamMember, uploadGalleryImage } from './controllers/services.controller.js';
 import rateLimit from 'express-rate-limit';
+import { Googlelogout, googleUserLogin } from './controllers/GoogleUser.controller.js';
 
 dotenv.config();
 
@@ -81,6 +82,11 @@ router.route('/verify-payment').post(storeVerifiedPayment);
 router.route('/get-payment-data/:id').get(getPaymentById);
 router.route('/get-all-payment-data').get(authAdmin, getAllPayments);
 
+// ---------Google auth routes----------------
+router.route('/google-login').post(googleUserLogin);
+router.route('/google-logout').post(Googlelogout);
+
+// Start server
 app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`);
 }); 
