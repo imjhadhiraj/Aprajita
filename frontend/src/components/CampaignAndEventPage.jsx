@@ -102,8 +102,7 @@ const CampaignPage = () => {
                     <button onClick={openModal} className="bg-orange-500 text-white px-6 py-2 rounded">BECOME A VOLUNTEER</button>
                 </div>
             </div>
-            {modalOpen && <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-
+            {modalOpen && <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
                 <div className="bg-white p-8 rounded-lg">
                     <h2 className="text-2xl font-bold mb-4">Become a Volunteer</h2>
                     <form className="flex flex-col gap-4" onSubmit={handleVolunteer}>
