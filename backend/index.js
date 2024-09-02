@@ -6,7 +6,7 @@ import mongoose from 'mongoose';
 import { loginAdmin, logout, profile, registerAdmin, updateProfile } from './controllers/User.controller.js';
 import { createPayment, getAllPayments, getPaymentById, storeVerifiedPayment } from './controllers/payment.controller.js';
 import { authAdmin } from './middlewares/authAdmin.middleware.js';
-import { addEvent, addTeamMember, deleteEvent, deleteGalleryImage, deleteTeamMember, deleteUnusedImage, getAllEvents, getAllGalleryImages, getAllTeamMembers, getEvents, getGalleryImages, updateEvent, updateTeamMember, uploadGalleryImage } from './controllers/services.controller.js';
+import { addEvent, addTeamMember, deleteEvent, deleteGalleryImage, deleteTeamMember, deleteUnusedImage, getAllEvents, getAllGalleryImages, getAllTeamMembers, getEvents, getGalleryImages, getTeamMembers, updateEvent, updateTeamMember, uploadGalleryImage } from './controllers/services.controller.js';
 import rateLimit from 'express-rate-limit';
 import { Googlelogout, googleUserLogin } from './controllers/GoogleUser.controller.js';
 
@@ -75,7 +75,8 @@ router.route('/get-all-events').get(getAllEvents);
 router.route('/add-team-member').post(authAdmin, addTeamMember);
 router.route('/update-team-member/:id').put(authAdmin, updateTeamMember);
 router.route('/delete-team-member/:id').delete(authAdmin, deleteTeamMember);
-router.route('/get-team-members').get(getAllTeamMembers);
+router.route('/get-team-members').get(getTeamMembers);
+router.route('/get-all-team-members').get(getAllTeamMembers);
 
 // ----------- payment----------------
 router.route('/create-payment').post(createPayment)

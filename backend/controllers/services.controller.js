@@ -319,6 +319,18 @@ export const updateTeamMember = async (req, res) => {
     }
 }
 
+export const getTeamMembers = async (req, res) => {
+    try {
+        const teamMembers = await Member.find().sort({ createdAt: 1 }).limit(6);
+        if (!teamMembers) {
+            return res.status(400).json({ error: 'Team Members not found' });
+        }
+        return res.status(200).json(teamMembers);
+    } catch (error) {
+        return res.status(400).json(error?.message);
+    }
+}
+
 export const getAllTeamMembers = async (req, res) => {
     try {
         const teamMembers = await Member.find().sort({ createdAt: 1 });

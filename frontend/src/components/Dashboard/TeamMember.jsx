@@ -36,7 +36,7 @@ const TeamMember = () => {
     const fetchMembers = async () => {
         setIsLoading(true);
         try {
-            const response = await axios.get(`${import.meta.env.VITE_BACKEND_BASE_URL}/get-team-members`);
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_BASE_URL}/get-all-team-members`);
             setMembers(response.data);
         } catch (error) {
             toast.error(error.response?.data?.error || 'An error occurred while fetching Members.');
