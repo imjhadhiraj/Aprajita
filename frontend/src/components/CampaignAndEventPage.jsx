@@ -104,10 +104,10 @@ const CampaignPage = () => {
                     ))}
                 </div>
                 {!allEvents ? (<button
-                    className="text-blue-500 px-4 py-2 rounded mt-4 cursor-pointer block mx-auto"
+                    className="text-blue-500 px-4 py-2 rounded mt-4 cursor-pointer font-semibold block mx-auto"
                     onClick={fetchAllEvents}>See All Events
                 </button>) : (<button
-                    className="text-blue-500 px-4 py-2 rounded mt-4 cursor-pointer block mx-auto"
+                    className="text-blue-500 px-4 py-2 rounded mt-4 cursor-pointer font-semibold block mx-auto"
                     onClick={fetchLatestEvents}>See less Events
                 </button>)}
             </div>

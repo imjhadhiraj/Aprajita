@@ -321,7 +321,7 @@ export const updateTeamMember = async (req, res) => {
 
 export const getTeamMembers = async (req, res) => {
     try {
-        const teamMembers = await Member.find().sort({ createdAt: 1 }).limit(6);
+        const teamMembers = await Member.find().sort({ createdAt: -1 }).limit(6);
         if (!teamMembers) {
             return res.status(400).json({ error: 'Team Members not found' });
         }
@@ -333,7 +333,7 @@ export const getTeamMembers = async (req, res) => {
 
 export const getAllTeamMembers = async (req, res) => {
     try {
-        const teamMembers = await Member.find().sort({ createdAt: 1 });
+        const teamMembers = await Member.find().sort({ createdAt: -1 });
         if (!teamMembers) {
             return res.status(400).json({ error: 'Team Members not found' });
         }
