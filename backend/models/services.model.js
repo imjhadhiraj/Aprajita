@@ -34,7 +34,7 @@ const memberSchema = new mongoose.Schema({
         instagram: String,
         linkedin: String
     }
-}, { timstamps: true });
+}, { timestamps: true });
 
 const gallerySchema = new mongoose.Schema({
     user: {
