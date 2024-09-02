@@ -17,22 +17,28 @@ const Events = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [editEventId, setEditEventId] = useState('');
     const [editImgSrc, setEditImgSrc] = useState('');
+    const [deleteModal, setDeleteModal] = useState(false);
+    const [deleteId, setDeleteId] = useState('');
+
 
     useEffect(() => {
         fetchEvents();
     }, []);
 
     const fetchEvents = async () => {
+        toast.loading('Fetching events...');
         setIsLoading(true);
         try {
-            const response = await axios.get(`${import.meta.env.VITE_BACKEND_BASE_URL}/get-events`);
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_BASE_URL}/get-all-events`);
             setEvents(response.data);
         } catch (error) {
             toast.error(error.response?.data?.error || 'An error occurred while fetching events.');
         } finally {
+            toast.dismiss();
             setIsLoading(false);
         }
     };
+
 
     const closeModal = () => {
         setIsModalOpen(false);
@@ -47,6 +53,7 @@ const Events = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         setIsLoading(true);
+        toast.loading('Please wait...');
         try {
             if (isEditing) {
                 try {
@@ -69,14 +76,15 @@ const Events = () => {
                         withCredentials: true,
                     });
 
+                    toast.dismiss();
                     if (response.status === 200) {
                         toast.success(response.data.message);
                         await fetchEvents();
                     } else {
                         toast.error('Failed to update event.');
                     }
-
                 } catch (error) {
+                    toast.dismiss();
                     toast.error(error.response?.data?.error || 'An error occurred while updating the event.');
                 }
                 finally {
@@ -107,7 +115,7 @@ const Events = () => {
             const response = await axios.post(`${import.meta.env.VITE_BACKEND_BASE_URL}/add-event`, eventData, {
                 withCredentials: true,
             });
-
+            toast.dismiss();
             if (response.status === 200) {
                 toast.success(response.data.message);
                 setIsModalOpen(false);
@@ -116,8 +124,8 @@ const Events = () => {
                 toast.error('Failed to add event.');
             }
         } catch (error) {
-            console.log(error)
-            toast.error('An error occurred while adding the event.');
+            toast.dismiss();
+            toast.error(error.response?.data?.error || 'An error occurred while adding the event.');
         } finally {
             setIsLoading(false);
             setTitle('');
@@ -144,18 +152,27 @@ const Events = () => {
 
     const handleDeleteEvent = async (id) => {
         setIsLoading(true);
+        toast.loading('Deleting event...');
         try {
             const response = await axios.delete(`${import.meta.env.VITE_BACKEND_BASE_URL}/delete-event/${id}`, {
                 withCredentials: true,
             });
+            toast.dismiss();
             toast.success(response.data.message);
             await fetchEvents();
         } catch (error) {
+            toast.dismiss();
             toast.error(error.response?.data?.error || 'An error occurred while deleting the event.');
         } finally {
             setIsLoading(false);
+            setDeleteModal(false);
         }
     };
+
+    const openDeleteModal = (id) => {
+        setDeleteModal(true);
+        setDeleteId(id);
+    }
 
     return (
         <div className="bg-gray-100 min-h-screen p-8">
@@ -185,7 +202,7 @@ const Events = () => {
                                     <p className="text-gray-600 mb-4">{event.description}</p>
                                     <div className="flex items-center text-gray-500 mb-2">
                                         <Calendar className="h-5 w-5 mr-2" />
-                                        <span>{new Date(event.date).toLocaleDateString()}</span>
+                                        <span>{new Date(event.date).toLocaleDateString('en-GB')}</span>
                                     </div>
                                     <div className="flex items-center text-gray-500 mb-4">
                                         <MapPin className="h-5 w-5 mr-2" />
@@ -199,7 +216,7 @@ const Events = () => {
                                             <Edit className="h-5 w-5 mr-2" />
                                             Edit</button>
                                         <button
-                                            onClick={() => handleDeleteEvent(event._id)}
+                                            onClick={() => openDeleteModal(event._id)}
                                             className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg flex items-center transition duration-300 ease-in-out"
                                         >
                                             <Trash className="h-5 w-5 mr-2" />
@@ -286,6 +303,39 @@ const Events = () => {
                         </div>
                     </div>
                 )}
+
+                {deleteModal && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                        <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
+                            <h2 className="text-3xl font-bold mb-6 text-gray-800">Delete Event</h2>
+                            <p className="text-gray-600 mb-6">Are you sure you want to delete this event?</p>
+                            <div className="flex justify-end space-x-4">
+                                <button
+                                    type="button"
+                                    onClick={() => setDeleteModal(false)}
+                                    className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={() => handleDeleteEvent(deleteId)}
+                                    className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out"
+                                >
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {
+                    events.length === 0 && !isLoading && (
+                        <div className="text-center text-gray-600 mt-8">
+                            <h2 className="text-2xl font-bold mb-4">No events found</h2>
+                            <p className="text-lg">There are no events available. Please add new events.</p>
+                        </div>
+                    )
+                }
             </div>
         </div>
     );

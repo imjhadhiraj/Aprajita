@@ -23,6 +23,12 @@ export const registerAdmin = async (req, res) => {
     }
 
     try {
+        // find if user already exists
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ error: 'User already exists' });
+        }
+
         const hashedPassword = bcrypt.hashSync(password, salt);
 
         const user = await User.create({

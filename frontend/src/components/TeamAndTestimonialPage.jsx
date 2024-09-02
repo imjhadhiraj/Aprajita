@@ -46,10 +46,24 @@ const TeamSection = () => {
     const [teamData, setTeamData] = useState(null);
     const [teamMemberModal, setTeamMemberModal] = useState(false);
 
+    const [allTeamMember, setAllTeamMember] = useState(false);
+
     const fetchTeam = async () => {
         try {
             const response = await axios.get(`${import.meta.env.VITE_BACKEND_BASE_URL}/get-team-members`);
             setTeamMembers(response.data);
+            setAllTeamMember(false);
+        } catch (error) {
+            console.error(error);
+            toast.error('Failed to fetch team members');
+        }
+    }
+
+    const fetchAllTeamMembers = async () => {
+        try {
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_BASE_URL}/get-all-team-members`);
+            setTeamMembers(response.data);
+            setAllTeamMember(true);
         } catch (error) {
             console.error(error);
             toast.error('Failed to fetch team members');
@@ -78,6 +92,19 @@ const TeamSection = () => {
                         />
                     ))}
                 </div>
+                {
+                    !allTeamMember ? (<button
+                        className='text-blue-600 hover:text-blue-700 font-semibold mt-8 block mx-auto'
+                        onClick={fetchAllTeamMembers}
+                    >View All Team Members
+                    </button>) : (
+                        <button
+                            className='text-blue-600 hover:text-blue-700 font-semibold mt-8 block mx-auto'
+                            onClick={fetchTeam}
+                        >View Less Team Members</button>
+                    )
+                }
+
                 {teamMemberModal && teamData && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
                         <div className="bg-white rounded-lg max-w-4xl w-full overflow-hidden shadow-2xl">

@@ -58,12 +58,12 @@ const GalleryPage = () => {
                         ))}
                     </div>
                 </div>
-                {!imagesAll ? (<div onClick={handleAllImages} className="flex justify-center items-center text-blue-600 cursor-pointer font-semibold text-lg py-2">
+                {!imagesAll ? (<button onClick={handleAllImages} className="block mx-auto items-center text-blue-600 cursor-pointer font-semibold text-lg py-2">
                     View more
-                </div>)
-                    : (<div onClick={fetchGalleryImages} className="flex justify-center items-center text-blue-600 cursor-pointer font-semibold text-lg py-2">
+                </button>)
+                    : (<button onClick={fetchGalleryImages} className="block mx-auto text-blue-600 cursor-pointer font-semibold text-lg py-2">
                         View less
-                    </div>)
+                    </button>)
                 }
                 {selectedImage && (
                     <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50" onClick={closeModal}>
