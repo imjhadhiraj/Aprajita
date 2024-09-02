@@ -18,11 +18,14 @@ const Gallery = () => {
     }, []);
 
     const fetchImages = async () => {
+        toast.loading('Fetching images...');
         setIsLoading(true);
         try {
             const response = await axios.get(`${import.meta.env.VITE_BACKEND_BASE_URL}/get-all-gallery-images`);
             setImages(response.data);
+            toast.dismiss();
         } catch (err) {
+            toast.dismiss();
             toast.error(err?.response?.data?.error || 'Failed to fetch images');
         } finally {
             setIsLoading(false);
@@ -30,11 +33,14 @@ const Gallery = () => {
     };
 
     const handleDelete = async (id) => {
+        toast.loading('Deleting image...');
         try {
             const res = await axios.delete(`${import.meta.env.VITE_BACKEND_BASE_URL}/delete-gallery-image/${id}`, { withCredentials: true });
             setImages(images.filter(img => img._id !== id));
+            toast.dismiss();
             toast.success(res.data.message);
         } catch (err) {
+            toast.dismiss();
             toast.error(err?.response?.data?.error || 'Failed to delete image');
 
         } finally {
@@ -56,6 +62,7 @@ const Gallery = () => {
         }
 
         setIsLoading(true);
+        toast.loading('Uploading images...');
         try {
             const uploadPromises = selectedFiles.map(file => uploadToCloud(file));
             const uploadedUrls = await Promise.all(uploadPromises);
@@ -64,7 +71,7 @@ const Gallery = () => {
                 { images: uploadedUrls },
                 { withCredentials: true }
             );
-
+            toast.dismiss();
             if (response.status === 200) {
                 toast.success(response.data.message);
                 fetchImages();
@@ -72,6 +79,7 @@ const Gallery = () => {
                 toast.error(response.data.error);
             }
         } catch (error) {
+            toast.dismiss();
             toast.error(error?.response?.data?.error || 'Failed to upload image');
 
         } finally {

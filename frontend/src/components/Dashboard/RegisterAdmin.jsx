@@ -42,6 +42,8 @@ const RegisterAdmin = () => {
             return;
         }
 
+        toast.loading('Uploading Image...');
+
         let profileImgUrl = null;
         try {
             if (adminData.profileImg) {
@@ -55,16 +57,19 @@ const RegisterAdmin = () => {
                 profileImg: profileImgUrl
             };
 
+            toast.loading('Registering Admin...');
+
             const response = await axios.post(
                 `${import.meta.env.VITE_BACKEND_BASE_URL}/register-admin`,
                 adminDataToSend,
                 { withCredentials: true }
             );
-
+            toast.dismiss();
             toast.success(response.data.message);
             setAdminData({ name: '', email: '', password: '', profileImg: null });
             setPreviewImage(null);
         } catch (error) {
+            toast.dismiss();
             toast.error(error.response?.data?.error || 'An error occurred');
             await axios.delete(`${import.meta.env.VITE_BACKEND_BASE_URL}/delete-cloudinary-image`, {
                 headers: {

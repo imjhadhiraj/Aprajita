@@ -209,13 +209,25 @@ export const deleteEvent = async (req, res) => {
     }
 }
 
-export const getAllEvents = async (req, res) => {
+export const getEvents = async (req, res) => {
     try {
-        const event = await Event.find().sort({ createdAt: -1 });
+        const event = await Event.find().sort({ date: -1 }).limit(5);
         if (!event) {
             return res.status(400).json({ error: 'Events not found' });
         }
         return res.status(200).json(event);
+    } catch (error) {
+        return res.status(400).json(error?.message);
+    }
+}
+
+export const getAllEvents = async (req, res) => {
+    try {
+        const events = await Event.find().sort({ date: -1 });
+        if (!events) {
+            return res.status(400).json({ error: 'Events not found' });
+        }
+        return res.status(200).json(events);
     } catch (error) {
         return res.status(400).json(error?.message);
     }

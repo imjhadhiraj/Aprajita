@@ -21,14 +21,15 @@ const AllPayments = () => {
     }
 
     const fetchAllPaymets = async () => {
+        toast.loading("Fetching all payments")
         try {
             const response = await axios.get(`${import.meta.env.VITE_BACKEND_BASE_URL}/get-all-payment-data`, {
                 withCredentials: true
             })
-
-            // console.log(response.data.payments)
+            toast.dismiss()
             setPayments(response.data?.payments)
         } catch (error) {
+            toast.dismiss()
             toast.error(error?.response?.data?.message || "Something went wrong")
             console.error(error)
         }

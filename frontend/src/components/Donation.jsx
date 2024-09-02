@@ -37,10 +37,11 @@ const Donation = () => {
             }
 
             const key = import.meta.env.VITE_RAZORPAY_API_KEY;
+            toast.loading('Creating order...');
             const orderResponse = await axios.post(`${import.meta.env.VITE_BACKEND_BASE_URL}/create-payment`, {
                 amount: paymentDetails.amount
             });
-
+            toast.dismiss();
             if (orderResponse.status !== 200) {
                 toast.error('Something went wrong');
                 return;
@@ -68,15 +69,14 @@ const Donation = () => {
                         razorpay_payment_id: response.razorpay_payment_id,
                         razorpay_signature: response.razorpay_signature
                     };
-
+                    toast.loading('Verifying payment...');
                     const paymentRes = await axios.post(`${import.meta.env.VITE_BACKEND_BASE_URL}/verify-payment`, paymentData);
-
+                    toast.dismiss();
                     if (paymentRes.status === 200) {
                         navigate(`/payment-success/${rzp_id}`);
                     } else {
                         toast.error('Payment failed');
                     }
-
                 },
                 prefill: {
                     name: paymentDetails.name,
@@ -127,7 +127,7 @@ const Donation = () => {
 
 
                         <input
-                            type="text"
+                            type="Number"
                             value={paymentDetails.amount}
                             onChange={(e) => setPaymentDetails({ ...paymentDetails, amount: e.target.value })}
                             placeholder="Amount"

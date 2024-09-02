@@ -26,6 +26,9 @@ const TeamMember = () => {
     const [editMode, setEditMode] = useState(false);
     const [imageSrc, setImageSrc] = useState(null);
 
+    const [imageToDelete, setImageToDelete] = useState(null);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
     useEffect(() => {
         fetchMembers();
     }, []);
@@ -45,12 +48,12 @@ const TeamMember = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         setIsLoading(true);
-
         try {
             if (editMode) {
                 try {
                     let imageUrl = formData.profileImg;
                     if (formData.profileImg instanceof File) {
+                        toast.loading('Uploading Image...');
                         imageUrl = await uploadToCloud(formData.profileImg);
                         if (!imageUrl) {
                             throw new Error('Failed to upload image');
@@ -65,17 +68,18 @@ const TeamMember = () => {
                         image: imageUrl,
                         socials: JSON.stringify(formData.socials),
                     };
-
+                    toast.loading('Updating Member...');
                     const response = await axios.put(`${import.meta.env.VITE_BACKEND_BASE_URL}/update-team-member/${editId}`, memberData, {
                         withCredentials: true,
                     });
-
+                    toast.dismiss();
                     if (response.status === 200) {
                         toast.success(response.data.message);
                         setIsModalOpen(false);
                         await fetchMembers();
                     }
                 } catch (error) {
+                    toast.dismiss();
                     toast.error(error.response?.data?.error || 'An error occurred while updating the member.');
                 }
                 finally {
@@ -97,15 +101,13 @@ const TeamMember = () => {
                 }
                 return;
             }
-
-
+            toast.loading('Uploading Image...');
             const imageUrl = await uploadToCloud(formData.profileImg);
 
             if (!imageUrl) {
                 throw new Error('Failed to upload image');
             }
 
-            // Prepare the data to send to the backend
             const memberData = {
                 name: formData.name,
                 position: formData.position,
@@ -114,6 +116,7 @@ const TeamMember = () => {
                 image: imageUrl,
                 socials: JSON.stringify(formData.socials),
             };
+            toast.loading('Adding Member...');
             const response = await axios.post(
                 `${import.meta.env.VITE_BACKEND_BASE_URL}/add-team-member`,
                 memberData,
@@ -121,7 +124,7 @@ const TeamMember = () => {
                     withCredentials: true,
                 }
             );
-
+            toast.dismiss();
             if (response.status === 200) {
                 toast.success(response.data.message);
                 setIsModalOpen(false);
@@ -130,6 +133,7 @@ const TeamMember = () => {
                 toast.error('Failed to add Member.');
             }
         } catch (error) {
+            toast.dismiss();
             toast.error(error.response?.data?.error || 'An error occurred while adding the member.');
             await axios.delete(`${import.meta.env.VITE_BACKEND_BASE_URL}/delete-cloudinary-image`, {
                 headers: {
@@ -194,13 +198,16 @@ const TeamMember = () => {
 
     const handleDeleteMember = async (id) => {
         setIsLoading(true);
+        toast.loading('Deleting Member...');
         try {
             const response = await axios.delete(`${import.meta.env.VITE_BACKEND_BASE_URL}/delete-team-member/${id}`, {
                 withCredentials: true,
             });
+            toast.dismiss();
             toast.success(response.data.message);
             await fetchMembers();
         } catch (error) {
+            toast.dismiss();
             toast.error(error.response?.data?.error || 'An error occurred while deleting the member.');
         } finally {
             setIsLoading(false);
@@ -261,7 +268,10 @@ const TeamMember = () => {
                                             Edit
                                         </button>
                                         <button
-                                            onClick={() => handleDeleteMember(member._id)}
+                                            onClick={() => {
+                                                setImageToDelete(member._id);
+                                                setIsDeleteModalOpen(true);
+                                            }}
                                             className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out flex gap-2"
                                         >
                                             <Trash2Icon className="w-6 h-6" />
@@ -367,6 +377,34 @@ const TeamMember = () => {
                                 }
                             </div>
                         </form>
+                    </div>
+                </div>
+            )}
+
+            {isDeleteModalOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-8">
+                        <h2 className="text-3xl font-bold mb-6 text-gray-800">Delete Member</h2>
+                        <p className="text-gray-600 mb-4">Are you sure you want to delete this member?</p>
+                        <div className="flex justify-end space-x-4 mr-3">
+                            <button
+                                type="button"
+                                onClick={() => setIsDeleteModalOpen(false)}
+                                className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    handleDeleteMember(imageToDelete);
+                                    setIsDeleteModalOpen(false);
+                                }}
+                                className="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out"
+                            >
+                                Delete Member
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
