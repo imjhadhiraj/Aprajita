@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "concurrently \"nodemon index.js\" \"cd ../frontend && npm run dev\""
   },
   "keywords": [],
   "author": "",
@@ -28,6 +28,7 @@
     "razorpay": "^2.9.4"
   },
   "devDependencies": {
+    "concurrently": "^8.2.2",
     "nodemon": "^3.1.4"
   }
 }

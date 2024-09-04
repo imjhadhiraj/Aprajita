@@ -73,7 +73,18 @@ export const getPaymentById = async (req, res) => {
 
 export const getAllPayments = async (req, res) => {
     try {
-        const payments = await Payment.find();
+        const { startDate, endDate } = req.query;
+
+        const query = {};
+
+        if (startDate && endDate) {
+            query.createdAt = {
+                $gte: new Date(startDate),
+                $lte: new Date(endDate),
+            };
+        }
+
+        const payments = await Payment.find(query).sort({ createdAt: -1 }); // recent payment first
 
         if (payments.length === 0) {
             return res.status(404).json({ message: "Payment not found" });
