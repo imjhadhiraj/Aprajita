@@ -10,10 +10,12 @@ const bannerSchema = new mongoose.Schema({
 const memberSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     position: {
         type: String,
+        trim: true,
         required: true
     },
     image: {
@@ -22,10 +24,12 @@ const memberSchema = new mongoose.Schema({
     },
     description: {
         type: String,
+        trim: true,
         required: true
     },
     quote: {
         type: String,
+        trim: true,
         required: false
     },
     socials: {

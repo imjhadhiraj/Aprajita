@@ -4,10 +4,12 @@ const paymentSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
+        trim: true,
     },
     email: {
         type: String,
         required: true,
+        lowercase: true,
     },
     amount: {
         type: Number,
@@ -16,6 +18,7 @@ const paymentSchema = new mongoose.Schema({
     phone: {
         type: String,
         required: true,
+        length: 10,
     },
     date: {
         type: Date,

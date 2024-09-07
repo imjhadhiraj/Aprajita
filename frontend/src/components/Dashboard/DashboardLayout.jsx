@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import useAdmin from '../../store/useAdmin'
-import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import { Image, Calendar, Users, UserPlus, LogOut, Menu, X, CreditCard } from 'lucide-react'
+import { Image, Calendar, Users, UserPlus, LogOut, Menu, X, CreditCard, Edit2 } from 'lucide-react'
 import toast, { Toaster } from 'react-hot-toast'
 
 const DashboardLayout = () => {
@@ -68,8 +68,14 @@ const DashboardLayout = () => {
                     />
                     <span className="text-center text-white">
                         Welcome back,<br />
-                        <span className='font-semibold text-lg'>{user?.user?.name?.substr(0, 20)}</span>
+                        <div className='flex items-center justify-center'>
+                            <span className='font-semibold text-lg'>{user?.user?.name?.substr(0, 20)}</span>
+                            <Link to="/admin-dashboard/update-adminProfile" className="ml-2">
+                                <Edit2 className="" size={18} />
+                            </Link>
+                        </div>
                     </span>
+
                 </div>
                 <ul className="space-y-4">
                     {navItems.map((item) => (

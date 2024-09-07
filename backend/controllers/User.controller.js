@@ -125,6 +125,7 @@ export const profile = async (req, res) => {
 
 export const updateProfile = async (req, res) => {
     const user = req.user;
+    console.log(req.body)
     const { name, email, profileImg } = req.body;
     if (!name || !email) {
         return res.status(400).json({ error: 'All fields are required' });
@@ -147,6 +148,40 @@ export const updateProfile = async (req, res) => {
                 message: 'Profile updated successfully',
                 user: updatedUser
             });
+    } catch (error) {
+        return res.status(400).json(error?.message);
+    }
+}
+
+export const changePassword = async (req, res) => {
+    const user = req.user;
+    const { password, newPassword } = req.body;
+    if (!password || !newPassword) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
+    if (newPassword.length < 6) {
+        return res
+            .status(400)
+            .json({ error: 'Password must be at least 6 characters' });
+    }
+    try {
+        const myuser = await User.findById(user._id);
+        if (!myuser) {
+            return res.status(400).json({ error: 'User not found' });
+        }
+        if (!bcrypt.compareSync(password, myuser.password)) {
+            return res.status(400).json({ error: 'Invalid credentials' });
+        }
+        const hashedPassword = bcrypt.hashSync(newPassword, salt);
+        const updatedUser = await User.findByIdAndUpdate(user._id, {
+            password: hashedPassword
+        }, { new: true }).select('-password');
+        if (!updatedUser) {
+            return res.status(400).json({ error: 'Password update failed' });
+        }
+        return res
+            .status(200)
+            .json({ message: 'Password updated successfully' });
     } catch (error) {
         return res.status(400).json(error?.message);
     }
