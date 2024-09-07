@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
-import { loginAdmin, logout, profile, registerAdmin, updateProfile } from './controllers/User.controller.js';
+import { changePassword, loginAdmin, logout, profile, registerAdmin, updateProfile } from './controllers/User.controller.js';
 import { createPayment, getAllPayments, getPaymentById, storeVerifiedPayment } from './controllers/payment.controller.js';
 import { authAdmin } from './middlewares/authAdmin.middleware.js';
 import { addEvent, addTeamMember, deleteEvent, deleteGalleryImage, deleteTeamMember, deleteUnusedImage, getAllEvents, getAllGalleryImages, getAllTeamMembers, getEvents, getGalleryImages, getTeamMembers, updateEvent, updateTeamMember, uploadGalleryImage } from './controllers/services.controller.js';
@@ -51,6 +51,7 @@ router.route('/register-admin').post(
     registerAdmin);
 router.route('/login-admin').post(limiter, loginAdmin);
 router.route('/update-adminProfile').post(authAdmin, updateProfile);
+router.route('/change-password').put(authAdmin, changePassword);
 router.route('/admin-profile').post(authAdmin, profile);
 router.route('/logout').post(logout);
 //----------service routes----------------

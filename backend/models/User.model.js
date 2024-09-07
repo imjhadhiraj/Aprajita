@@ -4,16 +4,18 @@ const adminUserSchema = new mongoose.Schema({
     name: {
         type: String,
         min: 3,
+        trim: true,
         required: true,
     },
     email: {
         type: String,
         required: true,
+        lowercase: true,
         unique: true,
     },
     password: {
         type: String,
-        min: 8,
+        min: 6,
         required: true
     },
     profileImg: {

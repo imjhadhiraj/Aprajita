@@ -17,6 +17,7 @@ import RegisterAdmin from './components/Dashboard/RegisterAdmin.jsx';
 import PaymentSuccessPage from './components/PaymentSuccessPage.jsx';
 import AllPayments from './components/Dashboard/AllPayments.jsx';
 import ReadMore from './components/ReadMore.jsx';
+import UpdateAdmin from './components/Dashboard/UpdateAdmin.jsx';
 
 const router = createBrowserRouter([
   {
@@ -63,6 +64,10 @@ const router = createBrowserRouter([
       {
         path: "get-all-paymentDetails",
         element: <AllPayments />
+      },
+      {
+        path: "update-adminProfile",
+        element: <UpdateAdmin />
       }
     ]
   },
