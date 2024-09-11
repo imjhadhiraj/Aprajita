@@ -232,7 +232,7 @@ const TeamMember = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                     {members.map((member) => (
                         <div key={member._id} className="bg-white shadow-xl rounded-lg overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105">
-                            <img className="w-full h-64 object-cover" src={member.image} alt={member.name} />
+                            <img className="w-full h-64 object-contain" src={member.image} alt={member.name} />
                             <div className="p-6">
                                 <h2 className="text-2xl font-bold text-gray-800 mb-2">{member.name}</h2>
                                 <p className="text-gray-600 mb-4">{member.position}</p>
