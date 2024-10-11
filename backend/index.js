@@ -3,12 +3,44 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
-import { changePassword, loginAdmin, logout, profile, registerAdmin, updateProfile } from './controllers/User.controller.js';
-import { createPayment, getAllPayments, getPaymentById, storeVerifiedPayment } from './controllers/payment.controller.js';
+import {
+    changePassword,
+    loginAdmin,
+    logout,
+    profile,
+    registerAdmin,
+    updateProfile
+} from './controllers/User.controller.js';
+import {
+    createPayment,
+    getAllPayments,
+    getPaymentById,
+    storeVerifiedPayment
+} from './controllers/payment.controller.js';
 import { authAdmin } from './middlewares/authAdmin.middleware.js';
-import { addEvent, addTeamMember, deleteEvent, deleteGalleryImage, deleteTeamMember, deleteUnusedImage, getAllEvents, getAllGalleryImages, getAllTeamMembers, getEvents, getGalleryImages, getTeamMembers, updateEvent, updateTeamMember, uploadGalleryImage } from './controllers/services.controller.js';
+import {
+    addEvent,
+    addSubscriber,
+    addTeamMember,
+    deleteEvent,
+    deleteGalleryImage,
+    deleteTeamMember,
+    deleteUnusedImage,
+    getAllEvents,
+    getAllGalleryImages,
+    getAllTeamMembers,
+    getEvents,
+    getGalleryImages,
+    getTeamMembers,
+    updateEvent,
+    updateTeamMember,
+    uploadGalleryImage
+} from './controllers/services.controller.js';
 import rateLimit from 'express-rate-limit';
-import { Googlelogout, googleUserLogin } from './controllers/GoogleUser.controller.js';
+import {
+    Googlelogout,
+    googleUserLogin
+} from './controllers/GoogleUser.controller.js';
 
 dotenv.config();
 
@@ -88,6 +120,9 @@ router.route('/get-all-payment-data').get(authAdmin, getAllPayments);
 // ---------Google auth routes----------------
 router.route('/google-login').post(googleUserLogin);
 router.route('/google-logout').post(Googlelogout);
+
+// -----subscriber routes----------------
+router.route('/subscribe').post(addSubscriber);
 
 // Start server
 app.listen(PORT, () => {

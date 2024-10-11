@@ -1,5 +1,7 @@
 import { Banner, Gallery, Event, Member } from '../models/services.model.js';
+import Subscribers from '../models/Subscriber.model.js';
 import { deleteFromCloudinary } from '../utils/Cloudinary.utils.js';
+import { sendEmailToSubscribers } from '../utils/sendEmail.utils.js';
 
 export const uploadGalleryImage = async (req, res) => {
     try {
@@ -140,6 +142,15 @@ export const addEvent = async (req, res) => {
         if (!event) {
             return res.status(400).json({ error: 'Failed to create event' });
         }
+
+        const to = await Subscribers.find().select('email'); // gives array of emails
+        const options = {
+            to,
+            template: 'Event.mail',
+            data: { title, description, date, location, image }
+        }
+
+        await sendEmailToSubscribers(options);
 
         return res.status(200).json({ message: 'Event Added Successfully' });
     } catch (error) {
@@ -352,6 +363,22 @@ export const deleteUnusedImage = async (req, res) => {
         await deleteFromCloudinary(url);
         console.log("deleted unused image");
         return res.status(200).json({ message: 'Image deleted successfully' });
+    } catch (error) {
+        return res.status(400).json(error?.message);
+    }
+}
+
+export const addSubscriber = async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) {
+            return res.status(400).json({ error: 'Email is required' });
+        }
+        const subscriber = await Subscribers.create({ email });
+        if (!subscriber) {
+            return res.status(400).json({ error: 'Failed to subscribe' });
+        }
+        return res.status(200).json({ message: 'Subscribed Successfully' });
     } catch (error) {
         return res.status(400).json(error?.message);
     }

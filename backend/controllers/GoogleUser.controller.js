@@ -1,5 +1,6 @@
 import GoogleUser from '../models/GoogleUser.model.js';
 import jwt from 'jsonwebtoken';
+import Subscribers from '../models/Subscriber.model.js';
 /*
 import admin from 'firebase-admin';
 import serviceAccount from '../aprajita-firebase-adminsdk.json' assert { type: 'json' };
@@ -22,6 +23,11 @@ export const googleUserLogin = async (req, res) => {
                 picture,
             });
             existingUser = await newUser.save();
+            // make it subscriber and save it
+            const newSubscriber = new Subscribers({
+                email
+            });
+            await newSubscriber.save();
         }
         const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, {
             expiresIn: '7d',
