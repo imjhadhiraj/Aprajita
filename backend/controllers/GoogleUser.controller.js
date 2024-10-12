@@ -23,11 +23,14 @@ export const googleUserLogin = async (req, res) => {
                 picture,
             });
             existingUser = await newUser.save();
-            // make it subscriber and save it
-            const newSubscriber = new Subscribers({
-                email
-            });
-            await newSubscriber.save();
+            // make it subscriber and save it if not already subscribed
+            const isUserSubscribed = await Subscribers.findOne({ email });
+            if (!isUserSubscribed) {
+                const newSubscriber = new Subscribers({
+                    email
+                });
+                await newSubscriber.save();
+            }
         }
         const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, {
             expiresIn: '7d',

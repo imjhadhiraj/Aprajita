@@ -36,14 +36,13 @@ export const sendEmailToSubscribers = async (options) => {
             html
         };
 
-        // Check if 'to' is an array
-        if (Array.isArray(to)) {
-            for (const recipient of to) {
-                await transporter.sendMail({ ...message, to: recipient });
-            }
-        } else {
-            await transporter.sendMail({ ...message, to });
-        }
+        const recipients = Array.isArray(to) ? to : [to];
+        const emailPromises = recipients.map(recipient => {
+            // console.log('recipient', recipient)
+            transporter.sendMail({ ...message, to: recipient.email })
+        });
+
+        await Promise.all(emailPromises);
     } catch (error) {
         console.error('Error sending email:', error);
     }
