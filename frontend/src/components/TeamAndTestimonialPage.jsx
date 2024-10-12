@@ -173,9 +173,17 @@ const TeamSection = () => {
 const NewsletterSection = () => {
     const [subscribedEmail, setSubscribedEmail] = useState('');
 
-    const handleForm = (e) => {
+    const handleForm = async (e) => {
         e.preventDefault();
-        toast.success('Subscribed successfully');
+        try {
+            await axios.post(`${import.meta.env.VITE_BACKEND_BASE_URL}/subscribe`, {
+                email: subscribedEmail
+            });
+            toast.success('Subscribed successfully');
+        } catch (error) {
+            console.error(error);
+            toast.error('Failed to subscribe');
+        }
         setSubscribedEmail('');
     };
     return (

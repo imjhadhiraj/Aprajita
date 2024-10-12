@@ -1,9 +1,9 @@
-import axios from 'axios';
-import { Calendar, ArrowRight, MapPin } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { ArrowRight } from 'lucide-react';
+import { useState } from 'react';
 import Donation from './Donation';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import Events from './Events';
 
 const campaignContent = [
     {
@@ -21,9 +21,7 @@ const campaignContent = [
 ];
 
 const CampaignPage = () => {
-    const [latestEvents, setLatestEvents] = useState([]);
     const [modalOpen, setModalOpen] = useState(false);
-    const [allEvents, setAllEvents] = useState(false);
 
     const openModal = () => {
         setModalOpen(true);
@@ -39,29 +37,7 @@ const CampaignPage = () => {
         closeModal();
     }
 
-    const fetchLatestEvents = async () => {
-        try {
-            const response = await axios.get(`${import.meta.env.VITE_BACKEND_BASE_URL}/get-events`);
-            setLatestEvents(response.data);
-            setAllEvents(false);
-        } catch (error) {
-            console.error('Error fetching latest events:', error);
-        }
-    }
 
-    const fetchAllEvents = async () => {
-        try {
-            const response = await axios.get(`${import.meta.env.VITE_BACKEND_BASE_URL}/get-all-events`);
-            setLatestEvents(response.data);
-            setAllEvents(true);
-        } catch (error) {
-            toast.error(error.response?.data?.error || 'An error occurred while fetching events.');
-        }
-    }
-
-    useEffect(() => {
-        fetchLatestEvents();
-    }, [])
     return (
         <div className="font-sans">
             {/* Campaign Cards */}
@@ -77,43 +53,8 @@ const CampaignPage = () => {
                     </div>
                 ))}
             </div>
-
-            {/* Latest Events */}
-            <div id='events' className="p-8">
-                <h2 className="text-2xl font-bold mb-4">Latest Events</h2>
-                <div className="flex flex-wrap">
-                    {latestEvents.map((event) => (
-                        <div key={event._id} className="w-full md:w-1/3 p-2">
-                            <div className="bg-white p-4 rounded-lg shadow-md flex flex-col">
-                                <div className="h-48 mb-4">
-                                    <img src={event.image} alt={`Event ${event.title}`} className="w-full h-full object-cover rounded" />
-                                </div>
-                                <h4 className="font-bold mb-2">{event.title}</h4>
-                                <p className="text-sm mb-2">{event.description}</p>
-                                <div className="flex items-center text-sm text-gray-600 justify-between">
-                                    <div className="flex">
-                                        <Calendar size={16} className="mr-2" />
-                                        <span>Date: {new Date(event.date).toLocaleDateString('en-GB')}</span></div>
-                                    <div className="flex">
-                                        <MapPin className="h-5 w-5 mr-2" />
-                                        <span>{event.location}</span></div>
-
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-                {!allEvents ? (<button
-                    className="text-blue-500 px-4 py-2 rounded mt-4 cursor-pointer font-semibold block mx-auto"
-                    onClick={fetchAllEvents}>See All Events
-                </button>) : (<button
-                    className="text-blue-500 px-4 py-2 rounded mt-4 cursor-pointer font-semibold block mx-auto"
-                    onClick={fetchLatestEvents}>See less Events
-                </button>)}
-            </div>
-
+            <Events />
             <Donation />
-
             <div className="relative h-64 bg-gray-300">
                 <img src="volunteer.jpeg" alt="Volunteers" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center text-white">
@@ -135,8 +76,6 @@ const CampaignPage = () => {
                     </form>
                 </div>
             </div>
-
-
             }
         </div>
     );
