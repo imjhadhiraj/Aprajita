@@ -30,7 +30,16 @@ const router = createBrowserRouter([
   },
   {
     path: "/ReadMore",
-    element: <ReadMore />
+    element: (
+      <Suspense
+        fallback={
+          <div className='w-full h-screen flex justify-center items-center bg-gray-100'>
+            <Loader />
+          </div>
+        }>
+        <ReadMore />
+      </Suspense>
+    ),
   },
   {
     path: "/admin",
@@ -39,7 +48,8 @@ const router = createBrowserRouter([
         fallback={
           <div className='w-full h-screen flex justify-center items-center bg-gray-100'>
             <Loader />
-          </div>}>
+          </div>
+        }>
         <Admin />
       </Suspense>
     ),
@@ -51,7 +61,8 @@ const router = createBrowserRouter([
         fallback={
           <div className='w-full h-screen flex justify-center items-center bg-gray-100'>
             <Loader />
-          </div>}>
+          </div>
+        }>
         <PaymentSuccessPage />
       </Suspense>
     ),
@@ -62,7 +73,8 @@ const router = createBrowserRouter([
       fallback={
         <div className='w-full h-screen flex justify-center items-center bg-gray-100'>
           <Loader />
-        </div>}>
+        </div>
+      }>
       <DashboardLayout />,
     </Suspense>),
     children: [
